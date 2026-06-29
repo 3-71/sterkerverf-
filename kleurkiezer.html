@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D-kleurkiezer · SterkerVerf</title>
+<meta name="description" content="Draai vrij door een realistische 3D-kamer en kies live kleuren voor muren, accentmuur, kozijn, deur, plafond en vloer. Wissel van kamertype en neem uw kleuren mee in de offerte.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .kk-wrap{display:grid;grid-template-columns:1.42fr .58fr;gap:28px;align-items:start;padding-bottom:96px}
+  @media(max-width:980px){.kk-wrap{grid-template-columns:1fr}}
+  .stage{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);height:min(76vh,680px);background:linear-gradient(#1c1a17,#2a2622)}
+  @media(max-width:980px){.stage{height:60vh;min-height:430px}}
+  #scene3d{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+  #scene3d:active{cursor:grabbing}
+  /* vignette voor diepte */
+  .stage::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 140px rgba(20,12,8,.42);border-radius:22px}
+  .stage .hint-chip{position:absolute;left:14px;bottom:14px;background:rgba(23,19,17,.6);color:#fff;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:20px;backdrop-filter:blur(6px);pointer-events:none;display:flex;gap:14px;z-index:2}
+  .stage .hint-chip span{display:flex;align-items:center;gap:6px}
+  .stage .sel-chip{position:absolute;left:14px;top:14px;background:rgba(168,71,59,.92);color:#fff;font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:20px;backdrop-filter:blur(6px);pointer-events:none;display:none;z-index:2}
+  .stage .sel-chip.on{display:block}
+  .loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:rgba(255,255,255,.8);font-size:14px;z-index:3}
+  .spin{width:36px;height:36px;border-radius:50%;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .fail{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:30px;color:rgba(255,255,255,.85);font-size:14px;z-index:3}
+
+  .panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 12px 36px rgba(60,20,12,.08);position:sticky;top:90px}
+  .panel h3{font-size:12.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 11px}
+  .panel h3:not(:first-child){margin-top:22px}
+  .seg{display:grid;gap:7px}
+  .seg.c3{grid-template-columns:repeat(3,1fr)}
+  .seg button{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--sand);border:1.5px solid transparent;border-radius:11px;padding:10px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:.18s}
+  .seg button .dot{width:15px;height:15px;border-radius:5px;border:1px solid rgba(0,0,0,.12)}
+  .seg button:hover{background:var(--sand-2)}
+  .seg button.active{background:#fff;border-color:var(--terra);box-shadow:0 4px 12px rgba(168,71,59,.16)}
+  .accent-row{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:13px;color:var(--ink);font-weight:600}
+  .switch{position:relative;width:40px;height:23px;flex:none;border-radius:20px;background:var(--sand-2);cursor:pointer;transition:.2s}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}
+  .switch.on{background:var(--terra)}.switch.on::after{left:19px}
+  .accent-row small{font-weight:400;color:var(--muted)}
+  .krange{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:linear-gradient(90deg,#ffb35c,#fff3df,#d6e3ff);outline:none;cursor:pointer}
+  .krange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--terra);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.22)}
+  .krange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--terra);cursor:pointer}
+  .krow{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+  .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}
+  .sw{aspect-ratio:1;border-radius:11px;cursor:pointer;border:2px solid rgba(0,0,0,.06);position:relative;transition:transform .15s}
+  .sw:hover{transform:scale(1.08)}
+  .sw.active::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .sw[data-light="1"].active::after{color:var(--ink);text-shadow:none}
+  .sw-name{font-size:12.5px;color:var(--muted);min-height:18px;margin-bottom:12px}
+  .sw-name b{color:var(--ink);font-weight:600}
+  .custom{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+  .custom label{font-size:13px;font-weight:600;color:var(--ink)}
+  .custom input[type=color]{width:44px;height:32px;border:1px solid var(--line);border-radius:9px;background:none;cursor:pointer;padding:2px}
+  .actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .toggle{flex:1;min-width:108px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:13.5px;font-weight:600;border-radius:11px;padding:12px;cursor:pointer;border:1.5px solid var(--ink);background:#fff;color:var(--ink);transition:.18s}
+  .toggle.on{background:var(--ink);color:#fff}
+  .reset{font-family:inherit;font-size:13.5px;font-weight:600;border-radius:11px;padding:12px 14px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--muted)}
+  .reset:hover{color:var(--ink);border-color:var(--ink)}
+  .save{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .save a,.save button{display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-size:13px;font-weight:600;border-radius:11px;padding:12px 8px;cursor:pointer;border:none;text-align:center}
+  .save .dl{background:var(--sand);color:var(--ink);border:1.5px solid var(--line)}
+  .save .dl:hover{border-color:var(--ink)}
+  .save .go{background:var(--terra);color:#fff}
+  .save .go:hover{background:var(--terra-deep)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="brand" aria-label="SterkerVerf home"><img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="over-ons.html">Over ons</a>
+      <a href="diensten.html">Diensten</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="kleurkiezer.html">3D-kleurkiezer</a>
+      <a href="werkwijze.html">Werkwijze</a>
+      <a href="offerte.html" class="nav-cta">Offerte</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="phero">
+  <div class="wrap">
+    <span class="eyebrow">3D-kleurkiezer</span>
+    <h1>Loop door uw kamer, <span class="em">vóór de eerste kwaststreek</span></h1>
+    <p class="lead">Draai en zoom vrij door een realistische 3D-kamer. Kies een kamertype, klik op een vlak (of een losse accentmuur) en kies een kleur. Download uw resultaat of neem uw kleuren mee in de offerte.</p>
+  </div>
+</section>
+
+<div class="wrap kk-wrap">
+  <div class="stage">
+    <canvas id="scene3d"></canvas>
+    <div class="loading" id="loading"><div class="spin"></div>Realistische 3D-kamer laden…</div>
+    <div class="fail" id="fail">Je browser kon de 3D-weergave niet laden.<br>Probeer een andere browser of vernieuw de pagina.</div>
+    <div class="sel-chip" id="selChip">Geselecteerd: Muren</div>
+    <div class="hint-chip">
+      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0M3 12h18"/></svg>Sleep om te draaien</span>
+      <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4M11 8v6M8 11h6"/></svg>Scroll om te zoomen</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Kamertype</h3>
+    <div class="seg c3" id="roomSeg">
+      <button data-room="woonkamer" class="active">Woonkamer</button>
+      <button data-room="slaapkamer">Slaapkamer</button>
+      <button data-room="keuken">Keuken</button>
+    </div>
+
+    <h3>1 · Wat wilt u kleuren?</h3>
+    <div class="seg c3" id="seg">
+      <button data-target="muren" class="active"><span class="dot" data-dotfor="muren" style="background:#CDD8C8"></span>Muren</button>
+      <button data-target="kozijn"><span class="dot" data-dotfor="kozijn" style="background:#FFFFFF"></span>Kozijn</button>
+      <button data-target="deur"><span class="dot" data-dotfor="deur" style="background:#8FA39E"></span>Deur</button>
+      <button data-target="plafond"><span class="dot" data-dotfor="plafond" style="background:#F4EFE6"></span>Plafond</button>
+      <button data-target="vloer"><span class="dot" data-dotfor="vloer" style="background:#C9A779"></span>Vloer</button>
+      <button data-target="gordijn"><span class="dot" data-dotfor="gordijn" style="background:#E4D9C4"></span>Gordijnen</button>
+    </div>
+    <div class="accent-row"><span class="switch" id="accentSwitch" role="switch" aria-checked="false"></span>Accentmuur <small>(klik daarna één muur aan)</small></div>
+
+    <h3>2 · Kies een kleur</h3>
+    <div class="sw-name" id="swName"><b>Saliegroen</b> · Muren</div>
+    <div class="swatches" id="swatches"></div>
+    <div class="custom">
+      <label for="customColor">Eigen kleur</label>
+      <input type="color" id="customColor" value="#CDD8C8">
+      <span style="font-size:12.5px;color:var(--muted)">of kies hierboven</span>
+    </div>
+
+    <h3>Vloertype</h3>
+    <div class="seg" id="floorSeg" style="grid-template-columns:repeat(2,1fr)">
+      <button data-floor="planken" class="active">Planken</button>
+      <button data-floor="visgraat">Visgraat</button>
+      <button data-floor="tegel">Tegel</button>
+      <button data-floor="beton">Beton</button>
+      <button data-floor="marmer">Marmer</button>
+      <button data-floor="terrazzo">Terrazzo</button>
+      <button data-floor="tapijt">Tapijt</button>
+      <button data-floor="gietvloer">Gietvloer</button>
+    </div>
+
+    <h3>Daglicht</h3>
+    <div class="seg c3" id="daySeg">
+      <button data-day="ochtend">Ochtend</button>
+      <button data-day="middag" class="active">Middag</button>
+      <button data-day="avond">Avond</button>
+    </div>
+    <h3 style="margin-bottom:6px">Lichtkleur · <span id="kVal" style="color:var(--terra)">3000K</span></h3>
+    <input type="range" id="kelvin" class="krange" min="2700" max="5000" step="100" value="3000" aria-label="Lichtkleur in Kelvin">
+    <div class="krow"><span>Warm (2700K)</span><span>Koel (5000K)</span></div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">Tip: zet 'Daglicht' op <b>Avond</b>, dan gaan de lampen vanzelf aan.</p>
+
+    <div class="actions">
+      <button class="toggle" id="furnToggle" aria-pressed="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18h18M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M6 18v2M18 18v2"/></svg>
+        Gemeubeld
+      </button>
+      <button class="toggle" id="rotToggle" aria-pressed="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v5h-5"/></svg>
+        Auto-draaien
+      </button>
+      <button class="reset" id="resetBtn">Reset</button>
+    </div>
+
+    <div class="save">
+      <button class="dl" id="dlBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download foto</button>
+      <button class="go" id="goBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Mee in offerte</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-top"></div>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf">
+        <p>Vakkundig schilder-, behang- en lakwerk voor woningen in heel Nederland. Officieel sinds 2025.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Menu</h4>
+        <a href="index.html">Home</a><a href="over-ons.html">Over ons</a><a href="diensten.html">Diensten</a><a href="portfolio.html">Portfolio</a><a href="kleurkiezer.html">3D-kleurkiezer</a><a href="offerte.html">Offerte aanvragen</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="tel:+31687979346" class="fv">+31 6 87979346</a>
+        <a href="mailto:info@sterkerverf.nl" class="fv">info@sterkerverf.nl</a>
+        <span class="fv">Werkzaam in heel Nederland</span>
+        <span class="fv">KvK 98343599 · BTW NL005325294B30</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year></span> SterkerVerf · Schildersbedrijf</span>
+      <span>Transformeer uw woning</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const defaults = { muren:'#CDD8C8', accent:'#A8473B', plafond:'#F4EFE6', vloer:'#C9A779', kozijn:'#FFFFFF', deur:'#8FA39E', gordijn:'#E4D9C4' };
+const labels = { muren:'Muren', kozijn:'Kozijn', deur:'Deur', plafond:'Plafond', vloer:'Vloer', gordijn:'Gordijnen', accent:'Accentmuur' };
+const PALETTE = [
+  {n:'Zuiver wit', c:'#F7F5F0', light:1},{n:'Warm wit', c:'#EFE7D7', light:1},
+  {n:'Zacht grijs', c:'#CDCAC4', light:1},{n:'Saliegroen', c:'#CDD8C8', light:1},
+  {n:'SterkerVerf groen', c:'#A7C062'},{n:'Bosgroen', c:'#3E5E50'},
+  {n:'Duifblauw', c:'#9DB4C0', light:1},{n:'Diepblauw', c:'#2B4A6B'},
+  {n:'Petrol', c:'#2E7E84'},{n:'Zand', c:'#DCC9A6', light:1},
+  {n:'Oker', c:'#D69A3C'},{n:'Terracotta', c:'#A8473B'},
+  {n:'Klei', c:'#B98A6A'},{n:'Mauve', c:'#9C7E86', light:1},
+  {n:'Antraciet', c:'#3A3A3C'},{n:'Eiken', c:'#C9A779'},
+];
+const colorName = hex => { const f = PALETTE.find(p => p.c.toLowerCase()===(hex||'').toLowerCase()); return f ? f.n : hex; };
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const state = { target:'muren', accentMode:false, room:'woonkamer', colors:Object.assign({}, defaults) };
+
+try {
+  const canvas = $('#scene3d'), stage = canvas.parentElement;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, preserveDrawingBuffer:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#d9d2c6');
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+  camera.position.set(2.8, 1.7, 6.0);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 1.25, 0);
+  controls.enableDamping = true; controls.dampingFactor = 0.075;
+  controls.minDistance = 2.2; controls.maxDistance = 9.5;
+  controls.maxPolarAngle = Math.PI * 0.5; controls.minPolarAngle = 0.18;
+  controls.enablePan = true; controls.panSpeed = 0.5; controls.autoRotateSpeed = 0.8;
+
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+  const W = 6, H = 3, D = 7;
+
+  // ---------- textures ----------
+  function cv(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return c; }
+  function woodTexture(){
+    const c=cv(1024,1024), x=c.getContext('2d'); x.fillStyle='#cfc3ad'; x.fillRect(0,0,1024,1024);
+    const planks=5, pw=1024/planks;
+    for(let i=0;i<planks;i++){ const v=198+(Math.random()*30-15); x.fillStyle=`rgb(${v+12},${v},${v-18})`; x.fillRect(i*pw,0,pw,1024);
+      for(let g=0;g<60;g++){ x.strokeStyle=`rgba(120,95,60,${0.04+Math.random()*0.06})`; x.lineWidth=1+Math.random()*1.5; const gx=i*pw+Math.random()*pw; x.beginPath(); x.moveTo(gx,0); x.bezierCurveTo(gx+(Math.random()*20-10),340,gx+(Math.random()*20-10),680,gx+(Math.random()*16-8),1024); x.stroke(); }
+      x.fillStyle='rgba(70,52,33,0.5)'; x.fillRect(i*pw,0,2,1024); }
+    for(let j=1;j<6;j++){ x.fillStyle='rgba(70,52,33,0.4)'; x.fillRect(0,j*1024/6,1024,2); }
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2.4,2.8); t.anisotropy=maxAniso; return t;
+  }
+  function noiseBump(size,contrast){ const c=cv(size,size), x=c.getContext('2d'), img=x.createImageData(size,size); for(let i=0;i<img.data.length;i+=4){ const v=128+(Math.random()*2-1)*contrast; img.data[i]=img.data[i+1]=img.data[i+2]=v; img.data[i+3]=255; } x.putImageData(img,0,0); const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(4,4); return t; }
+  function skyView(phase){ const c=cv(1024,768), x=c.getContext('2d'); const g=x.createLinearGradient(0,0,0,768);
+    if(phase==='avond'){ g.addColorStop(0,'#2c3a63'); g.addColorStop(0.5,'#7a5a86'); g.addColorStop(0.78,'#d98a5a'); g.addColorStop(1,'#c79e78'); }
+    else if(phase==='ochtend'){ g.addColorStop(0,'#a9c4dd'); g.addColorStop(0.5,'#e7d3c0'); g.addColorStop(0.8,'#efe1cd'); g.addColorStop(1,'#dfe2cf'); }
+    else { g.addColorStop(0,'#9cc7e8'); g.addColorStop(0.55,'#cfe6f2'); g.addColorStop(0.75,'#e9efe2'); g.addColorStop(1,'#dfe7cf'); }
+    x.fillStyle=g; x.fillRect(0,0,1024,768);
+    const S = phase==='avond'?{x:230,y:430,r:150,c:'rgba(255,150,90,0.95)'} : phase==='ochtend'?{x:760,y:310,r:150,c:'rgba(255,220,170,0.9)'} : {x:760,y:180,r:160,c:'rgba(255,244,210,0.95)'};
+    const sg=x.createRadialGradient(S.x,S.y,10,S.x,S.y,S.r); sg.addColorStop(0,S.c); sg.addColorStop(1,'rgba(255,244,210,0)'); x.fillStyle=sg; x.fillRect(S.x-S.r,S.y-S.r,S.r*2,S.r*2);
+    const h1=phase==='avond'?'#3a4a3e':'#bcd0a8', h2=phase==='avond'?'#2e3b32':'#a7c08e', tr=phase==='avond'?'#26332a':'#7f9f6c';
+    x.fillStyle=h1; x.beginPath(); x.moveTo(0,560); x.quadraticCurveTo(300,470,560,560); x.quadraticCurveTo(800,640,1024,540); x.lineTo(1024,768); x.lineTo(0,768); x.fill();
+    x.fillStyle=h2; x.beginPath(); x.moveTo(0,640); x.quadraticCurveTo(360,560,680,650); x.quadraticCurveTo(900,710,1024,650); x.lineTo(1024,768); x.lineTo(0,768); x.fill();
+    x.fillStyle=tr; for(const tx of [120,210,880,950]){ x.beginPath(); x.arc(tx,560,34,0,7); x.fill(); x.fillRect(tx-4,560,8,40); }
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
+  function contactTex(){ const c=cv(256,256), x=c.getContext('2d'); const g=x.createRadialGradient(128,128,8,128,128,124); g.addColorStop(0,'rgba(0,0,0,0.42)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); }
+  function tileTex(){ const S=1024,c=cv(S,S),x=c.getContext('2d'); const n=4, sz=S/n; for(let i=0;i<n;i++)for(let j=0;j<n;j++){ const v=212+(Math.random()*16-8); x.fillStyle='rgb('+v+','+(v-5)+','+(v-14)+')'; x.fillRect(i*sz,j*sz,sz,sz); } x.strokeStyle='rgba(120,110,95,.55)'; x.lineWidth=7; for(let i=0;i<=n;i++){ x.beginPath(); x.moveTo(i*sz,0); x.lineTo(i*sz,S); x.stroke(); x.beginPath(); x.moveTo(0,i*sz); x.lineTo(S,i*sz); x.stroke(); } const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(3,3.4); t.anisotropy=maxAniso; return t; }
+  function concreteTex(){ const S=512,c=cv(S,S),x=c.getContext('2d'); x.fillStyle='#cfcabf'; x.fillRect(0,0,S,S); for(let i=0;i<5000;i++){ const v=Math.random()*40-20; x.fillStyle='rgba('+(120+v)+','+(118+v)+','+(110+v)+',0.05)'; x.fillRect(Math.random()*S,Math.random()*S,3,3); } const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2,2.3); t.anisotropy=maxAniso; return t; }
+  function herringboneTex(){ const S=1200,c=cv(S,S),x=c.getContext('2d'); x.fillStyle='#b9aa8e'; x.fillRect(0,0,S,S); const W=46,L=W*4, sh=['#ccbd9d','#c1b292','#d3c4a1','#c7b997']; let k=0;
+    function plank(cx,cy,ang){ x.save(); x.translate(cx,cy); x.rotate(ang); x.fillStyle=sh[(k++)%4]; x.fillRect(-L/2,-W/2,L,W); x.strokeStyle='rgba(70,52,33,.55)'; x.lineWidth=2; x.strokeRect(-L/2,-W/2,L,W); x.strokeStyle='rgba(110,85,55,.12)'; x.lineWidth=1; for(let g=-1;g<=1;g++){ x.beginPath(); x.moveTo(-L/2,g*W*0.28); x.lineTo(L/2,g*W*0.28); x.stroke(); } x.restore(); }
+    const colStep=L/Math.SQRT2, rowStep=W*Math.SQRT2, diag=(L/2)/Math.SQRT2;
+    for(let cxn=-2; cxn*colStep<S+colStep; cxn++){ for(let ryn=-2; ryn*rowStep<S+rowStep; ryn++){ const baseX=cxn*colStep; const baseY=ryn*rowStep+(cxn%2?rowStep/2:0); plank(baseX+diag,baseY-diag,-Math.PI/4); plank(baseX+diag,baseY+diag,Math.PI/4); } }
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1.4,1.6); t.anisotropy=maxAniso; return t; }
+  function marmerTex(){ const S=1024,c=cv(S,S),x=c.getContext('2d'); x.fillStyle='#eceae5'; x.fillRect(0,0,S,S);
+    for(let i=0;i<1400;i++){ const v=Math.random()*16-8; x.fillStyle='rgba('+(232+v)+','+(230+v)+','+(225+v)+',0.05)'; x.fillRect(Math.random()*S,Math.random()*S,4,4); }
+    x.strokeStyle='rgba(150,148,151,0.32)'; for(let v=0;v<14;v++){ x.lineWidth=Math.random()*2.4+0.4; x.beginPath(); let px=Math.random()*S,py=0; x.moveTo(px,py); while(py<S){ px+=(Math.random()*2-1)*55; py+=18+Math.random()*38; x.lineTo(px,py);} x.stroke(); }
+    x.strokeStyle='rgba(108,106,110,0.22)'; for(let v=0;v<8;v++){ x.lineWidth=Math.random()*1.1+0.3; x.beginPath(); let px=0,py=Math.random()*S; x.moveTo(px,py); while(px<S){ py+=(Math.random()*2-1)*48; px+=18+Math.random()*38; x.lineTo(px,py);} x.stroke(); }
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1.6,1.8); t.anisotropy=maxAniso; return t; }
+  function terrazzoTex(){ const S=1024,c=cv(S,S),x=c.getContext('2d'); x.fillStyle='#efece4'; x.fillRect(0,0,S,S);
+    const chips=['#A8473B','#2E8C9E','#E8C14E','#4E9E5C','#2B6CA8','#9C8B72','#c7c0b2'];
+    for(let i=0;i<2600;i++){ x.fillStyle=chips[(Math.random()*chips.length)|0]; x.globalAlpha=0.85; const cx=Math.random()*S,cy=Math.random()*S,r=2+Math.random()*7,n=4+(Math.random()*3|0); x.beginPath(); x.moveTo(cx+r,cy); for(let k=1;k<n;k++){ const a=k/n*Math.PI*2,rr=r*(0.6+Math.random()*0.6); x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);} x.closePath(); x.fill(); }
+    x.globalAlpha=1; const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2.4,2.8); t.anisotropy=maxAniso; return t; }
+  function tapijtTex(){ const S=512,c=cv(S,S),x=c.getContext('2d'); x.fillStyle='#b6a994'; x.fillRect(0,0,S,S);
+    for(let i=0;i<55000;i++){ const v=Math.random()*30-15; x.fillStyle='rgba('+(182+v)+','+(169+v)+','+(148+v)+',0.5)'; x.fillRect(Math.random()*S,Math.random()*S,1.6,1.6); }
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(5,5.6); t.anisotropy=maxAniso; return t; }
+  function gietvloerTex(){ const S=512,c=cv(S,S),x=c.getContext('2d'); const g=x.createLinearGradient(0,0,S,S); g.addColorStop(0,'#d9d6d0'); g.addColorStop(0.5,'#cfccc4'); g.addColorStop(1,'#d5d2cb'); x.fillStyle=g; x.fillRect(0,0,S,S);
+    for(let i=0;i<420;i++){ const v=Math.random()*16-8; x.fillStyle='rgba('+(208+v)+','+(205+v)+','+(198+v)+',0.06)'; const r=20+Math.random()*60; x.beginPath(); x.arc(Math.random()*S,Math.random()*S,r,0,7); x.fill(); }
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1.5,1.7); t.anisotropy=maxAniso; return t; }
+  const wallBump = noiseBump(256,10), shadowTex = contactTex();
+
+  // ---------- materials ----------
+  const wallMats = [];
+  function newWallMat(){ const m=new THREE.MeshStandardMaterial({ color:defaults.muren, roughness:0.97, metalness:0, bumpMap:wallBump, bumpScale:0.0025 }); wallMats.push(m); return m; }
+  const ceilMat  = new THREE.MeshStandardMaterial({ color:defaults.plafond, roughness:1 });
+  const floorMat = new THREE.MeshStandardMaterial({ color:defaults.vloer, roughness:0.5, metalness:0.06, map:woodTexture() });
+  const doorMat  = new THREE.MeshPhysicalMaterial({ color:defaults.deur, roughness:0.4, clearcoat:0.6, clearcoatRoughness:0.3 });
+  const kozMat   = new THREE.MeshPhysicalMaterial({ color:defaults.kozijn, roughness:0.35, clearcoat:0.5, clearcoatRoughness:0.3 });
+  const trimMat  = new THREE.MeshStandardMaterial({ color:'#f0ebe0', roughness:0.45 });
+  const metalMat = new THREE.MeshStandardMaterial({ color:'#c9a14a', roughness:0.3, metalness:0.85 });
+  const curtainMat = new THREE.MeshStandardMaterial({ color:defaults.gordijn, roughness:0.92, metalness:0, side:THREE.DoubleSide });
+  const railMat = new THREE.MeshStandardMaterial({ color:'#3a3a3c', roughness:0.45, metalness:0.5 });
+
+  const pickables = [];
+  function addPick(mesh, target){ mesh.userData.target = target; pickables.push(mesh); return mesh; }
+
+  // ---------- shell ----------
+  function wall(geo, mat, pos, roty){ const m=new THREE.Mesh(geo,mat); m.position.set(...pos); if(roty) m.rotation.y=roty; m.receiveShadow=true; scene.add(m); return m; }
+  const back  = wall(new THREE.PlaneGeometry(W,H), newWallMat(), [0,H/2,-D/2]);
+  const front = wall(new THREE.PlaneGeometry(W,H), newWallMat(), [0,H/2,D/2], Math.PI);
+  const left  = wall(new THREE.PlaneGeometry(D,H), newWallMat(), [-W/2,H/2,0], Math.PI/2);
+  const right = wall(new THREE.PlaneGeometry(D,H), newWallMat(), [W/2,H/2,0], -Math.PI/2);
+  const wallMeshes = [back,front,left,right];
+  wallMeshes.forEach((w,i)=>{ w.userData.wallIndex=i; addPick(w,'muren'); });
+
+  const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(W,D), ceilMat); ceiling.position.set(0,H,0); ceiling.rotation.x=Math.PI/2; ceiling.receiveShadow=true; scene.add(ceiling); addPick(ceiling,'plafond');
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W,D), floorMat); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor); addPick(floor,'vloer');
+
+  function trimRun(len,x,y,z,ry){ const m=new THREE.Mesh(new THREE.BoxGeometry(len,0.13,0.05), trimMat); m.position.set(x,y,z); if(ry) m.rotation.y=ry; m.castShadow=true; m.receiveShadow=true; scene.add(m); }
+  [-D/2+0.02, D/2-0.02].forEach(z=>{ trimRun(W,0,0.065,z); trimRun(W,0,H-0.06,z); });
+  [-W/2+0.02, W/2-0.02].forEach(x=>{ trimRun(D,x,0.065,0,Math.PI/2); trimRun(D,x,H-0.06,0,Math.PI/2); });
+
+  // door
+  const doorSlab = new THREE.Mesh(new THREE.BoxGeometry(0.95,2.1,0.06), doorMat); doorSlab.position.set(-1.7,1.05,-D/2+0.05); doorSlab.castShadow=true; doorSlab.receiveShadow=true; scene.add(doorSlab); addPick(doorSlab,'deur');
+  function doorPanel(y){ const p=new THREE.Mesh(new THREE.BoxGeometry(0.64,0.74,0.02), doorMat); p.position.set(-1.7,y,-D/2+0.082); scene.add(p); addPick(p,'deur'); }
+  doorPanel(1.45); doorPanel(0.62);
+  const dFrame = new THREE.Mesh(new THREE.BoxGeometry(1.14,2.26,0.08), trimMat); dFrame.position.set(-1.7,1.13,-D/2); dFrame.castShadow=true; scene.add(dFrame);
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.045,32,32), metalMat); knob.position.set(-1.26,1.0,-D/2+0.11); scene.add(knob);
+
+  // window
+  const wx=1.45, wy=1.45, ww=1.9, wh=1.6;
+  const view = new THREE.Mesh(new THREE.PlaneGeometry(ww+0.5,wh+0.5), new THREE.MeshBasicMaterial({ map:skyView() })); view.position.set(wx,wy,-D/2-0.08); scene.add(view);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(ww,wh), new THREE.MeshPhysicalMaterial({ color:'#eaf3f7', roughness:0.05, transparent:true, opacity:0.16 })); glass.position.set(wx,wy,-D/2+0.04); scene.add(glass);
+  function bar(w,h,x,y){ const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.10), kozMat); b.position.set(x,y,-D/2+0.06); b.castShadow=true; scene.add(b); addPick(b,'kozijn'); }
+  const tk=0.11; bar(ww+tk,tk,wx,wy+wh/2); bar(ww+tk,tk,wx,wy-wh/2); bar(tk,wh+tk,wx-ww/2,wy); bar(tk,wh+tk,wx+ww/2,wy); bar(tk*0.8,wh,wx,wy); bar(ww,tk*0.8,wx,wy);
+  const sill = new THREE.Mesh(new THREE.BoxGeometry(ww+0.45,0.09,0.2), kozMat); sill.position.set(wx,wy-wh/2-0.07,-D/2+0.13); sill.castShadow=true; scene.add(sill); addPick(sill,'kozijn');
+  const radMat = new THREE.MeshStandardMaterial({ color:'#f3efe7', roughness:0.4 });
+  for(let i=0;i<12;i++){ const fin=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.44,0.1), radMat); fin.position.set(wx-0.66+i*0.12,0.27,-D/2+0.14); fin.castShadow=true; scene.add(fin); }
+  const radTop=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.06,0.14), radMat); radTop.position.set(wx,0.51,-D/2+0.14); scene.add(radTop);
+
+  // gordijnen (geplooid, kleurbaar) — links en rechts van het raam, vloerlengte
+  function curtainPanel(cx){
+    const cw=0.52, ch=2.46, segW=26, segH=12;
+    const geo=new THREE.PlaneGeometry(cw,ch,segW,segH);
+    const pos=geo.attributes.position;
+    for(let i=0;i<pos.count;i++){
+      const x=pos.getX(i), y=pos.getY(i);
+      const u=(x+cw/2)/cw;                 // 0..1 over de breedte
+      const top=(y+ch/2)/ch;               // 0 onder .. 1 boven
+      const gather=0.45+0.55*(1-top);      // bovenaan strakker geplooid, onder ruimer
+      pos.setZ(i, Math.sin(u*Math.PI*7)*0.05*gather);
+    }
+    geo.computeVertexNormals();
+    const m=new THREE.Mesh(geo, curtainMat);
+    m.position.set(cx,1.30,-D/2+0.20); m.castShadow=true; m.receiveShadow=true;
+    scene.add(m); addPick(m,'gordijn'); return m;
+  }
+  curtainPanel(0.34); curtainPanel(2.56);
+  const rail=new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.022,2.9,32), railMat); rail.rotation.z=Math.PI/2; rail.position.set(wx,2.55,-D/2+0.2); rail.castShadow=true; scene.add(rail);
+  [wx-1.45, wx+1.45].forEach(fx=>{ const fin=new THREE.Mesh(new THREE.SphereGeometry(0.045,16,16), railMat); fin.position.set(fx,2.55,-D/2+0.2); scene.add(fin); });
+
+  // framed photos
+  const texLoader = new THREE.TextureLoader();
+  function framedPhoto(url,w,h,pos,roty){ const g=new THREE.Group(); g.position.set(...pos); if(roty) g.rotation.y=roty; scene.add(g);
+    const frame=new THREE.Mesh(new THREE.BoxGeometry(w+0.08,h+0.08,0.04), new THREE.MeshStandardMaterial({ color:'#2c2622', roughness:0.5 })); frame.castShadow=true; g.add(frame);
+    const mat=new THREE.MeshStandardMaterial({ color:'#bbb', roughness:0.6 });
+    texLoader.load(url, t=>{ t.colorSpace=THREE.SRGBColorSpace; mat.map=t; mat.color.set('#fff'); mat.needsUpdate=true; });
+    const pic=new THREE.Mesh(new THREE.PlaneGeometry(w,h), mat); pic.position.set(0,0,0.025); g.add(pic); }
+  framedPhoto('assets/A_house_colored_nice_green.jpeg',0.95,0.72,[-0.35,1.75,-D/2+0.06],0);
+  framedPhoto('assets/walls_painted_a_house_badroom_floor.jpeg',0.8,1.0,[-W/2+0.06,1.55,-1.2],Math.PI/2);
+
+  // lights
+  const hemi = new THREE.HemisphereLight('#ffffff','#b1a184',0.6); scene.add(hemi);
+  const amb = new THREE.AmbientLight('#ffffff',0.3); scene.add(amb);
+  const sun = new THREE.DirectionalLight('#fff1d6',1.9); sun.position.set(2.6,4.4,-6.8); sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048); sun.shadow.camera.near=1; sun.shadow.camera.far=24;
+  sun.shadow.camera.left=-7; sun.shadow.camera.right=7; sun.shadow.camera.top=7; sun.shadow.camera.bottom=-7;
+  sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.025; sun.shadow.radius=4; sun.target.position.set(-0.5,0.4,1.6); scene.add(sun); scene.add(sun.target);
+  const fillA = new THREE.PointLight('#fff4e6',5,24,1.6); fillA.position.set(0,1.9,1.0); scene.add(fillA);
+  const fillB = new THREE.PointLight('#ffffff',2.4,22,1.6); fillB.position.set(0,1.7,3.4); scene.add(fillB);
+  const fillBase = { a:5, b:2.4 };
+  const lampLights=[], lampGlows=[];   // worden per kamer gevuld (lampen)
+
+  // ---------- daglicht + lichtkleur (Kelvin) + lampen ----------
+  state.day='middag'; state.kelvin=3000;
+  function kelvinRGB(k){ k/=100; let r,g,b;
+    r = k<=66 ? 255 : 329.7*Math.pow(k-60,-0.1332);
+    g = k<=66 ? 99.47*Math.log(k)-161.12 : 288.12*Math.pow(k-60,-0.0755);
+    b = k>=66 ? 255 : (k<=19 ? 0 : 138.52*Math.log(k-10)-305.04);
+    const cl=v=>Math.max(0,Math.min(255,v))/255; return new THREE.Color(cl(r),cl(g),cl(b)); }
+  const skyTex = { ochtend:skyView('ochtend'), middag:skyView('middag'), avond:skyView('avond') };
+  const DAY = {
+    ochtend:{ pos:[-6,2.6,-4], col:'#ffe6c0', int:1.5, hemi:0.5, amb:0.26, bg:'#e2ddcf', fill:0.85, env:0.85, exp:0.98, dark:false },
+    middag: { pos:[2.6,5.0,-6], col:'#fff3df', int:2.1, hemi:0.66, amb:0.32, bg:'#d9d2c6', fill:1.0, env:1.0, exp:1.0, dark:false },
+    avond:  { pos:[-6,1.2,-3], col:'#ff9d5c', int:0.7, hemi:0.16, amb:0.10, bg:'#1a1620', fill:0.22, env:0.18, exp:0.5, dark:true },
+  };
+  function applyLamps(){ const on=DAY[state.day].dark, kc=kelvinRGB(state.kelvin);
+    lampLights.forEach(o=>{ o.l.intensity = on?o.base:0; o.l.color.copy(kc); });
+    lampGlows.forEach(o=>{ o.m.emissive.copy(kc); o.m.emissiveIntensity = on?o.base:0.05; }); }
+  function setKelvin(k){ state.kelvin=k; const kc=kelvinRGB(k); fillA.color.copy(kc); fillB.color.copy(kc); applyLamps(); }
+  function setDaylight(phase){ state.day=phase; const d=DAY[phase];
+    sun.position.set(d.pos[0],d.pos[1],d.pos[2]); sun.color.set(d.col); sun.intensity=d.int;
+    hemi.intensity=d.hemi; amb.intensity=d.amb; scene.background.set(d.bg);
+    fillA.intensity=fillBase.a*d.fill; fillB.intensity=fillBase.b*d.fill;
+    renderer.toneMappingExposure=d.exp;
+    wallMats.concat([ceilMat,floorMat,doorMat,kozMat,curtainMat]).forEach(m=>{ m.envMapIntensity=d.env; });
+    view.material.map=skyTex[phase]; view.material.needsUpdate=true; applyLamps(); }
+
+  // ---------- furniture / room types ----------
+  const furniture = new THREE.Group(); furniture.visible = false; scene.add(furniture);
+  function clearGroup(g){ for(let i=g.children.length-1;i>=0;i--){ const c=g.children[i]; g.remove(c); if(c.geometry) c.geometry.dispose(); if(c.material){ (Array.isArray(c.material)?c.material:[c.material]).forEach(m=>m.dispose()); } } }
+  function fbox(w,h,d,x,y,z,color,rough){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshStandardMaterial({ color, roughness:rough==null?0.8:rough })); m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; furniture.add(m); return m; }
+  function fcyl(rt,rb,h,x,y,z,color,rough){ const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,48), new THREE.MeshStandardMaterial({ color, roughness:rough==null?0.7:rough })); m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; furniture.add(m); return m; }
+  function rugAt(w,d,x,z,c1,c2){ const r=new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshStandardMaterial({ color:c1, roughness:1 })); r.rotation.x=-Math.PI/2; r.position.set(x,0.012,z); r.receiveShadow=true; furniture.add(r); const r2=new THREE.Mesh(new THREE.PlaneGeometry(w*0.8,d*0.75), new THREE.MeshStandardMaterial({ color:c2, roughness:1 })); r2.rotation.x=-Math.PI/2; r2.position.set(x,0.02,z); furniture.add(r2); }
+  function contact(w,d,x,z){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshBasicMaterial({ map:shadowTex, transparent:true, depthWrite:false })); m.rotation.x=-Math.PI/2; m.position.set(x,0.016,z); furniture.add(m); }
+  function plant(x,z){ fcyl(0.23,0.17,0.42,x,0.21,z,'#b07a4e',0.9); const f=new THREE.Mesh(new THREE.IcosahedronGeometry(0.52,1), new THREE.MeshStandardMaterial({ color:'#4E9E5C', roughness:0.9, flatShading:true })); f.position.set(x,0.86,z); f.castShadow=true; furniture.add(f); const f2=new THREE.Mesh(new THREE.IcosahedronGeometry(0.34,1), new THREE.MeshStandardMaterial({ color:'#5FAE6B', roughness:0.9, flatShading:true })); f2.position.set(x+0.17,0.66,z-0.09); furniture.add(f2); contact(0.7,0.7,x,z); }
+  // Rietveld Rood-Blauwe stoel (De Stijl — typisch Nederlands ontwerp)
+  function dutchChair(x,z,roty){
+    const g=new THREE.Group(); g.position.set(x,0,z); if(roty!=null) g.rotation.y=roty; furniture.add(g);
+    const black=new THREE.MeshStandardMaterial({ color:'#6e4f34', roughness:0.6 });   // walnoot frame
+    const red=new THREE.MeshStandardMaterial({ color:'#c2b196', roughness:0.7 });      // zand rug
+    const blue=new THREE.MeshStandardMaterial({ color:'#9aa896', roughness:0.7 });     // salie zitting
+    const yellow=new THREE.MeshStandardMaterial({ color:'#bb8a6a', roughness:0.6 });   // klei accent
+    function bm(w,h,d,bx,by,bz,mat,rx){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat); m.position.set(bx,by,bz); if(rx) m.rotation.x=rx; m.castShadow=true; m.receiveShadow=true; g.add(m); }
+    const t=0.035;
+    bm(t,t,0.66,-0.2,0.42,0.02,black); bm(t,t,0.66,0.2,0.42,0.02,black);                 // armleggers
+    bm(t,0.42,t,-0.2,0.21,0.30,black); bm(t,0.42,t,0.2,0.21,0.30,black);                  // voorpoten
+    bm(t,0.62,t,-0.2,0.31,-0.26,black); bm(t,0.62,t,0.2,0.31,-0.26,black);                // achterpoten
+    bm(0.46,t,t,0,0.30,0.30,black); bm(0.46,t,t,0,0.30,-0.26,black); bm(0.46,t,t,0,0.60,-0.30,black); // dwarsbalken
+    bm(0.40,0.03,0.44,0,0.345,0.02,blue,-0.12);                                           // zitting (blauw)
+    bm(0.40,0.52,0.03,0,0.66,-0.22,red,0.18);                                             // rug (rood)
+    bm(0.05,0.05,0.05,-0.2,0.42,0.36,yellow); bm(0.05,0.05,0.05,0.2,0.42,0.36,yellow);    // gele uiteinden
+    bm(0.05,0.05,0.05,-0.2,0.62,-0.27,yellow); bm(0.05,0.05,0.05,0.2,0.62,-0.27,yellow);
+    contact(0.75,0.85,x,z);
+  }
+  // Klompen (knipoog) — een paartje op de vloer
+  function klompen(x,z,roty){
+    const g=new THREE.Group(); g.position.set(x,0,z); if(roty!=null) g.rotation.y=roty; furniture.add(g);
+    const wood=new THREE.MeshStandardMaterial({ color:'#E8C14E', roughness:0.6 });
+    const dark=new THREE.MeshStandardMaterial({ color:'#6b4f2a', roughness:0.7 });
+    const accent=new THREE.MeshStandardMaterial({ color:'#B5301F', roughness:0.5 });
+    function clog(cx,ry){ const c=new THREE.Group(); c.position.set(cx,0,0); c.rotation.y=ry; g.add(c);
+      const body=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.07,0.24), wood); body.position.set(0,0.04,0); body.castShadow=true; body.receiveShadow=true; c.add(body);
+      const toe=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.11,0.1), wood); toe.position.set(0,0.07,0.14); toe.rotation.x=-0.6; toe.castShadow=true; c.add(toe);
+      const tip=new THREE.Mesh(new THREE.SphereGeometry(0.052,12,10), wood); tip.scale.set(1,0.8,0.7); tip.position.set(0,0.125,0.165); c.add(tip);
+      const hole=new THREE.Mesh(new THREE.BoxGeometry(0.075,0.025,0.12), dark); hole.position.set(0,0.075,-0.035); c.add(hole);
+      const dot=new THREE.Mesh(new THREE.SphereGeometry(0.014,8,8), accent); dot.position.set(0,0.125,0.2); c.add(dot);
+    }
+    clog(-0.07,0.12); clog(0.075,-0.12);
+    contact(0.5,0.45,x,z);
+  }
+  function pendant(x,z,shadeColor){ fcyl(0.012,0.012,0.7,x,H-0.35,z,'#3A3A3C'); const p=new THREE.Mesh(new THREE.ConeGeometry(0.24,0.26,48,1,true), new THREE.MeshStandardMaterial({ color:shadeColor||'#2c2622', roughness:0.5, side:THREE.DoubleSide })); p.position.set(x,H-0.74,z); furniture.add(p); const bMat=new THREE.MeshStandardMaterial({ color:'#fff3d0', emissive:'#ffdf9e', emissiveIntensity:0.05 }); const b=new THREE.Mesh(new THREE.SphereGeometry(0.06,16,16), bMat); b.position.set(x,H-0.78,z); furniture.add(b); const L=new THREE.PointLight('#ffe8bf',0,7,2); L.position.set(x,H-0.8,z); furniture.add(L); lampLights.push({l:L,base:3.4}); lampGlows.push({m:bMat,base:1.4}); }
+  function floorLamp(x,z){ fcyl(0.03,0.03,1.65,x,0.82,z,'#3A3A3C',0.5); fcyl(0.22,0.22,0.04,x,0.02,z,'#3A3A3C'); const sMat=new THREE.MeshStandardMaterial({ color:'#f3e4be', roughness:0.85, side:THREE.DoubleSide, emissive:'#f1d488', emissiveIntensity:0.05 }); const s=new THREE.Mesh(new THREE.CylinderGeometry(0.26,0.3,0.34,48,1,true), sMat); s.position.set(x,1.7,z); furniture.add(s); const L=new THREE.PointLight('#ffe0a3',0,6,2); L.position.set(x,1.6,z); furniture.add(L); lampLights.push({l:L,base:5}); lampGlows.push({m:sMat,base:0.9}); }
+
+  function buildWoonkamer(){
+    rugAt(3.1,2.1,0,-0.2,'#b9543f','#cf6a52');
+    contact(2.9,1.3,0,-2.5);
+    fbox(2.5,0.42,1.0,0,0.34,-2.5,'#6E7E78'); fbox(2.5,0.62,0.2,0,0.66,-2.95,'#62716B');
+    fbox(0.24,0.56,1.0,-1.25,0.5,-2.5,'#62716B'); fbox(0.24,0.56,1.0,1.25,0.5,-2.5,'#62716B');
+    fbox(1.12,0.2,0.86,-0.62,0.52,-2.45,'#7C8C86',0.9); fbox(1.12,0.2,0.86,0.62,0.52,-2.45,'#7C8C86',0.9);
+    fbox(0.42,0.42,0.18,-0.7,0.74,-2.78,'#A8473B',0.9); fbox(0.42,0.42,0.18,0.7,0.74,-2.78,'#2E7E9E',0.9);
+    fbox(1.25,0.08,0.62,0,0.42,-0.55,'#9C7C58',0.4); [[-0.52,-0.82],[0.52,-0.82],[-0.52,-0.28],[0.52,-0.28]].forEach(([x,z])=>fbox(0.07,0.42,0.07,x,0.2,z,'#7a6244'));
+    fbox(0.4,0.04,0.28,-0.2,0.48,-0.55,'#cdbf9f',0.6); fbox(0.26,0.06,0.34,0.3,0.49,-0.55,'#3E5E50',0.7); contact(1.5,0.9,0,-0.55);
+    dutchChair(2.0,1.7,-2.3); klompen(-1.15,-1.45,0.3); floorLamp(-2.15,1.8); pendant(0.4,-0.3);
+  }
+  function buildSlaapkamer(){
+    rugAt(3.0,2.2,-1.6,-0.3,'#3E5E50','#557a66');
+    contact(2.3,2.6,-1.9,-0.5);
+    // bed: head against left wall, extends +x
+    fbox(2.0,0.34,2.3,-1.85,0.17,-0.5,'#7a6244'); // frame
+    fbox(0.14,0.78,2.3,-2.85,0.5,-0.5,'#8a7252'); // headboard
+    fbox(1.86,0.24,2.16,-1.85,0.46,-0.5,'#efe9dd',0.95); // mattress
+    fbox(1.86,0.18,1.4,-1.78,0.6,-0.1,'#c7d3cb',0.95); // duvet
+    fbox(0.78,0.22,0.42,-2.45,0.66,-1.05,'#fff',0.95); fbox(0.78,0.22,0.42,-2.45,0.66,-0.0,'#fff',0.95); // pillows
+    // nightstands + lamps
+    fbox(0.5,0.5,0.5,-2.7,0.25,1.1,'#9C7C58',0.5);
+    const nlMat=new THREE.MeshStandardMaterial({ color:'#e7d7a8', roughness:0.8, emissive:'#f1d488', emissiveIntensity:0.05 });
+    const nl=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.16,0.34,40), nlMat); nl.position.set(-2.7,0.67,1.1); nl.castShadow=true; furniture.add(nl);
+    const nL=new THREE.PointLight('#ffe0a3',0,4,2); nL.position.set(-2.7,0.8,1.1); furniture.add(nL); lampLights.push({l:nL,base:2.6}); lampGlows.push({m:nlMat,base:0.8});
+    floorLamp(2.15,1.9); klompen(-1.3,-2.75,0.25); pendant(0.4,-0.3);
+    contact(0.6,0.6,-2.7,1.1);
+  }
+  function buildKeuken(){
+    // base + upper cabinets along right wall (x≈3)
+    const cab='#e9e3d6', cabR=0.5, ctop='#3a352f';
+    fbox(0.6,0.85,5.2,2.62,0.43,0,cab,cabR);           // base run
+    fbox(0.66,0.06,5.3,2.6,0.89,0,ctop,0.3);           // countertop
+    fbox(0.36,0.7,5.2,2.74,2.05,0,cab,cabR);           // upper run
+    // kastdeurtjes (naden) + handgrepen
+    const seamMat=new THREE.MeshStandardMaterial({color:'#cdc5b4',roughness:0.5});
+    const zsB=[-2.5,-1.85,-1.2,-0.55,0.1,0.75,1.4,2.05,2.5];
+    zsB.forEach(z=>{ const s=new THREE.Mesh(new THREE.BoxGeometry(0.012,0.78,0.012),seamMat); s.position.set(2.315,0.45,z); furniture.add(s); });
+    for(let i=0;i<zsB.length-1;i++){ const h=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.12,0.02),metalMat); h.position.set(2.30,0.62,(zsB[i]+zsB[i+1])/2); furniture.add(h); }
+    const zsU=[-2.5,-1.7,-0.9,-0.1,0.7,1.5,2.3,2.5];
+    zsU.forEach(z=>{ const s=new THREE.Mesh(new THREE.BoxGeometry(0.012,0.64,0.012),seamMat); s.position.set(2.555,2.05,z); furniture.add(s); });
+    for(let i=0;i<zsU.length-1;i++){ const h=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.1,0.02),metalMat); h.position.set(2.545,1.82,(zsU[i]+zsU[i+1])/2); furniture.add(h); }
+    // sink + stove insets
+    fbox(0.5,0.04,0.7,2.55,0.92,-1.2,'#9aa0a2',0.3);   // spoelbak
+    fbox(0.4,0.05,0.55,2.55,0.9,-1.2,'#7d8488',0.3);   // bak-verdieping
+    // kraan boven de spoelbak (chroom, gebogen)
+    const chrome=new THREE.MeshStandardMaterial({color:'#c7ccd0',metalness:0.9,roughness:0.22});
+    const kr=(g)=>{ g.castShadow=true; furniture.add(g); };
+    const riser=new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.026,0.34,16),chrome); riser.position.set(2.72,1.07,-1.2); kr(riser);
+    const spout=new THREE.Mesh(new THREE.CylinderGeometry(0.021,0.021,0.26,16),chrome); spout.position.set(2.6,1.235,-1.2); spout.rotation.z=Math.PI/2; kr(spout);
+    const bend=new THREE.Mesh(new THREE.SphereGeometry(0.025,12,12),chrome); bend.position.set(2.72,1.235,-1.2); furniture.add(bend);
+    const tip=new THREE.Mesh(new THREE.CylinderGeometry(0.019,0.019,0.07,12),chrome); tip.position.set(2.49,1.2,-1.2); kr(tip);
+    const lever=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.014,0.16,10),chrome); lever.position.set(2.75,1.18,-1.05); lever.rotation.x=Math.PI/2.6; kr(lever);
+    fbox(0.52,0.03,0.55,2.55,0.92,1.0,'#222',0.4);     // fornuis
+    // island
+    fbox(1.6,0.9,0.9,-0.2,0.45,0.8,cab,cabR); fbox(1.74,0.06,1.04,-0.2,0.93,0.8,ctop,0.3);
+    // stools
+    [-0.7,0.3].forEach(x=>{ fcyl(0.17,0.17,0.06,x,0.58,1.5,'#9C7C58',0.5); fcyl(0.03,0.03,0.56,x,0.3,1.5,'#3A3A3C',0.4); contact(0.4,0.4,x,1.5); });
+    // fridge
+    fbox(0.7,1.9,0.7,2.45,0.95,2.4,'#cfd2d1',0.35);
+    // afzuigkap boven het fornuis
+    fbox(0.4,0.04,0.5,2.45,1.46,1.0,'#1a1a1a',0.3);    // glasrand onder
+    fbox(0.46,0.18,0.62,2.47,1.57,1.0,'#c6cacd',0.3);  // schouw/kap
+    fbox(0.26,0.82,0.34,2.55,2.06,1.0,'#c6cacd',0.3);  // afvoerkoker omhoog
+    klompen(-1.3,-2.75,0.25); pendant(-0.6,0.8,'#2E7E9E'); pendant(0.2,0.8,'#A8473B');
+    contact(1.9,1.1,-0.2,0.8); contact(0.7,5.0,2.7,0);
+  }
+  function buildRoom(type){ clearGroup(furniture); lampLights.length=0; lampGlows.length=0; state.room=type;
+    if(type==='slaapkamer') buildSlaapkamer(); else if(type==='keuken') buildKeuken(); else buildWoonkamer();
+    applyLamps(); }
+  buildRoom('woonkamer');
+
+  // ---------- recolor / select ----------
+  function matsFor(target){
+    if(target==='muren') return wallMats;
+    if(target==='plafond') return [ceilMat];
+    if(target==='vloer') return [floorMat];
+    if(target==='deur') return [doorMat];
+    if(target==='kozijn') return [kozMat];
+    if(target==='gordijn') return [curtainMat];
+    if(target && target.startsWith('wall')) return [wallMats[+target.slice(4)]];
+    return [];
+  }
+  function applyColor(target,color){ state.colors[target==='muren'?'muren':(target.startsWith('wall')?'accent':target)] = color; matsFor(target).forEach(m=>m.color.set(color)); const dot=document.querySelector('[data-dotfor="'+(target.startsWith('wall')?'muren':target)+'"]'); if(dot && target==='muren') dot.style.background=color; }
+  function highlight(target){ wallMats.concat([ceilMat,floorMat,doorMat,kozMat,curtainMat]).forEach(m=>{ if(m.emissive){ m.emissive.set('#000'); m.emissiveIntensity=0; }}); matsFor(target).forEach(m=>{ if(m.emissive){ m.emissive.set('#fff'); m.emissiveIntensity=0.05; }}); }
+
+  const swWrap=$('#swatches');
+  PALETTE.forEach(p=>{ const b=document.createElement('button'); b.className='sw'; b.style.background=p.c; b.dataset.color=p.c; b.dataset.name=p.n; if(p.light) b.dataset.light='1'; b.setAttribute('aria-label',p.n);
+    b.addEventListener('click',()=>{ applyColor(state.target,p.c); $('#customColor').value=p.c; $('#swName').innerHTML='<b>'+p.n+'</b> · '+(labels[state.target]||'Accentmuur'); markSwatch(p.c); }); swWrap.appendChild(b); });
+  function markSwatch(color){ $$('.sw').forEach(s=>s.classList.toggle('active', s.dataset.color.toLowerCase()===(color||'').toLowerCase())); }
+
+  function curColor(t){ if(t.startsWith('wall')) return '#'+wallMats[+t.slice(4)].color.getHexString(); return state.colors[t]; }
+  function setTarget(t){ state.target=t;
+    $$('#seg button').forEach(b=>b.classList.toggle('active', b.dataset.target===t || (t.startsWith('wall') && b.dataset.target==='muren')));
+    highlight(t);
+    $('#selChip').textContent='Geselecteerd: '+(t.startsWith('wall')?'Accentmuur':labels[t]); $('#selChip').classList.add('on');
+    const cur=curColor(t); markSwatch(cur);
+    $('#swName').innerHTML='<b>'+colorName(cur)+'</b> · '+(t.startsWith('wall')?'Accentmuur':labels[t]);
+    if(/^#[0-9a-f]{6}$/i.test(cur)) $('#customColor').value=cur;
+  }
+  $$('#seg button').forEach(b=>b.addEventListener('click',()=>setTarget(b.dataset.target)));
+
+  // accent toggle
+  $('#accentSwitch').addEventListener('click',()=>{ state.accentMode=!state.accentMode; $('#accentSwitch').classList.toggle('on',state.accentMode); $('#accentSwitch').setAttribute('aria-checked',state.accentMode); });
+
+  // raycast
+  const ray=new THREE.Raycaster(); let down=null;
+  renderer.domElement.addEventListener('pointerdown',e=>{ down={x:e.clientX,y:e.clientY}; });
+  renderer.domElement.addEventListener('pointerup',e=>{ if(!down) return; const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null; if(moved>6) return;
+    const r=renderer.domElement.getBoundingClientRect(); const m=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(m,camera);
+    const hits=ray.intersectObjects(pickables,false); if(!hits.length) return; const obj=hits[0].object;
+    if(obj.userData.target==='muren' && state.accentMode && obj.userData.wallIndex!=null) setTarget('wall'+obj.userData.wallIndex);
+    else if(obj.userData.target) setTarget(obj.userData.target);
+  });
+
+  $('#customColor').addEventListener('input',e=>{ applyColor(state.target,e.target.value); $('#swName').innerHTML='<b>Eigen kleur</b> · '+(state.target.startsWith('wall')?'Accentmuur':labels[state.target]); markSwatch(e.target.value); });
+
+  // room type
+  $$('#roomSeg button').forEach(b=>b.addEventListener('click',()=>{ $$('#roomSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); buildRoom(b.dataset.room); furniture.visible=true; $('#furnToggle').classList.add('on'); $('#furnToggle').setAttribute('aria-pressed',true); }));
+
+  const floorTex = { planken: floorMat.map, visgraat: herringboneTex(), tegel: tileTex(), beton: concreteTex(), marmer: marmerTex(), terrazzo: terrazzoTex(), tapijt: tapijtTex(), gietvloer: gietvloerTex() };
+  const floorRough = { planken:0.5, visgraat:0.5, tegel:0.25, beton:0.7, marmer:0.18, terrazzo:0.3, tapijt:0.95, gietvloer:0.3 };
+  $$('#floorSeg button').forEach(b=>b.addEventListener('click',()=>{ $$('#floorSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); const ft=b.dataset.floor; floorMat.map=floorTex[ft]; floorMat.roughness=floorRough[ft]; floorMat.needsUpdate=true; }));
+
+  $$('#daySeg button').forEach(b=>b.addEventListener('click',()=>{ $$('#daySeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); setDaylight(b.dataset.day); }));
+  $('#kelvin').addEventListener('input',e=>{ const k=+e.target.value; $('#kVal').textContent=k+'K'; setKelvin(k); });
+
+  $('#furnToggle').addEventListener('click',()=>{ furniture.visible=!furniture.visible; $('#furnToggle').classList.toggle('on',furniture.visible); $('#furnToggle').setAttribute('aria-pressed',furniture.visible); });
+  $('#rotToggle').addEventListener('click',()=>{ controls.autoRotate=!controls.autoRotate; $('#rotToggle').classList.toggle('on',controls.autoRotate); $('#rotToggle').setAttribute('aria-pressed',controls.autoRotate); });
+  $('#resetBtn').addEventListener('click',()=>{ state.colors=Object.assign({},defaults); ['muren','plafond','vloer','deur','kozijn','gordijn'].forEach(t=>applyColor(t,defaults[t])); wallMats.forEach(m=>m.color.set(defaults.muren)); setTarget('muren'); });
+
+  // ---------- save / share ----------
+  function colorSummary(){
+    const acc = wallMats.map(m=>'#'+m.color.getHexString());
+    const allSame = acc.every(c=>c.toLowerCase()===acc[0].toLowerCase());
+    const parts=[];
+    parts.push('Muren: '+colorName('#'+wallMats[0].color.getHexString()));
+    if(!allSame){ const idx=acc.findIndex(c=>c.toLowerCase()!==acc[0].toLowerCase()); parts.push('Accentmuur: '+colorName(acc[idx])); }
+    parts.push('Kozijn: '+colorName('#'+kozMat.color.getHexString()));
+    parts.push('Deur: '+colorName('#'+doorMat.color.getHexString()));
+    parts.push('Plafond: '+colorName('#'+ceilMat.color.getHexString()));
+    parts.push('Vloer: '+colorName('#'+floorMat.color.getHexString()));
+    parts.push('Gordijnen: '+colorName('#'+curtainMat.color.getHexString()));
+    return parts.join(' · ');
+  }
+  $('#dlBtn').addEventListener('click',()=>{ renderer.render(scene,camera); const url=renderer.domElement.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='sterkerverf-kleuren.png'; a.click(); });
+  $('#goBtn').addEventListener('click',()=>{ location.href='offerte.html?kleuren='+encodeURIComponent(colorSummary()); });
+
+  // resize + loop
+  function resize(){ const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+  new ResizeObserver(resize).observe(stage); resize();
+  let first=true; function tick(){ controls.update(); renderer.render(scene,camera); if(first){ first=false; $('#loading').style.display='none'; } requestAnimationFrame(tick); }
+  setKelvin(3000); setDaylight('middag'); setTarget('muren'); tick();
+
+} catch(err){ console.error(err); document.getElementById('loading').style.display='none'; document.getElementById('fail').style.display='flex'; }
+</script>
+</body>
+</html>

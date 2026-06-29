@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Over ons · SterkerVerf</title>
+<meta name="description" content="SterkerVerf: officieel sinds 2025, met ervaren vakmensen, professioneel opgeleid bij Sigma en Sikkens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .intro{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
+  @media(max-width:860px){.intro{grid-template-columns:1fr;gap:36px}}
+  .intro p{font-size:17px;color:var(--muted);margin-bottom:16px}
+  .intro .img{border-radius:20px;overflow:hidden;aspect-ratio:4/3;box-shadow:var(--shadow)}
+  .intro .img img{width:100%;height:100%;object-fit:cover}
+
+  .badges{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
+  .badge{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 18px}
+  .badge .bd{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+  .badge small{display:block;font-size:12px;color:var(--muted)}
+  .badge .bi{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Sora',sans-serif;font-weight:800;font-size:14px;flex:none}
+
+  /* craft values */
+  .vals{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:760px){.vals{grid-template-columns:1fr}}
+  .val{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .val .vi{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:16px}
+  .val h3{font-size:18px;margin-bottom:8px}
+  .val p{font-size:14.5px;color:var(--muted)}
+
+  /* media row */
+  .media{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+  @media(max-width:760px){.media{grid-template-columns:1fr}}
+  .media .m{border-radius:18px;overflow:hidden;position:relative;aspect-ratio:16/11;background:var(--sand)}
+  .media .m img,.media .m svg{width:100%;height:100%;object-fit:cover;display:block}
+  .media .m .lbl{position:absolute;left:14px;bottom:14px;background:rgba(23,19,17,.78);color:#fff;font-size:12px;font-weight:600;padding:6px 12px;border-radius:20px;backdrop-filter:blur(4px)}
+  .media .m.video{cursor:pointer}
+  .media .m.video .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .media .m.video .play span{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  .media-col{display:grid;grid-template-rows:1fr 1fr;gap:18px}
+
+  /* Even kennismaken-blok — oranje + blauw */
+  .furkan{background:linear-gradient(120deg,var(--c-orange) 0%,#d97a2a 38%,var(--c-blue) 100%);border-radius:26px;padding:40px;display:grid;grid-template-columns:.78fr 1.22fr;gap:40px;align-items:center;color:#fff;position:relative;overflow:hidden}
+  .furkan::after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.10)}
+  @media(max-width:760px){.furkan{grid-template-columns:1fr;padding:28px;gap:28px}}
+  .tl{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;position:relative;margin-top:10px}
+  .tl::before{content:"";position:absolute;left:24px;right:24px;top:24px;height:2px;background:var(--line)}
+  .tlc{position:relative}
+  .tlc .yr{width:50px;height:50px;border-radius:50%;background:#fff;border:3px solid var(--terra);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:700;color:var(--terra);font-size:12.5px;margin-bottom:16px;position:relative;z-index:1}
+  .tlc h3{font-size:17px;margin-bottom:7px}
+  .tlc p{font-size:14px;color:var(--muted)}
+  @media(max-width:760px){.tl{grid-template-columns:1fr;gap:22px}.tl::before{display:none}}
+  .furkan .pic{background:#fff;border-radius:20px;padding:0;overflow:hidden;aspect-ratio:1;box-shadow:0 20px 50px rgba(20,40,80,.3);position:relative;z-index:1}
+  .furkan .pic svg{width:100%;height:100%;display:block}
+  .furkan .ftxt{position:relative;z-index:1}
+  .furkan .eyebrow{color:#fff}
+  .furkan .eyebrow::before{background:#fff}
+  .furkan h2{color:#fff;font-size:clamp(26px,3.4vw,38px);margin-bottom:14px}
+  .furkan p{font-size:16.5px;color:rgba(255,255,255,.92);margin-bottom:14px}
+  .furkan .sig{font-family:'Sora',sans-serif;font-weight:700;font-size:18px;margin-top:6px}
+  .furkan .role{font-size:14px;color:rgba(255,255,255,.85)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="brand" aria-label="SterkerVerf home"><img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="over-ons.html">Over ons</a>
+      <a href="diensten.html">Diensten</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="kleurkiezer.html">3D-kleurkiezer</a>
+      <a href="werkwijze.html">Werkwijze</a>
+      <a href="offerte.html" class="nav-cta">Offerte</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="phero">
+  <div class="wrap">
+    <span class="eyebrow">Over ons</span>
+    <h1>Jong bedrijf, <span class="em">vakmanschap met wortels</span></h1>
+    <p class="lead">SterkerVerf is officieel sinds 2025 een eigen bedrijf, maar het vakmanschap in ons team gaat veel verder terug.</p>
+  </div>
+</section>
+
+<section style="padding-top:40px">
+  <div class="wrap intro">
+    <div>
+      <span class="eyebrow">Ons verhaal</span>
+      <h2 style="font-size:clamp(26px,3.4vw,38px);margin-bottom:18px">Ervaren vakmensen, fris ondernemerschap</h2>
+      <p>Als eigen bedrijf zijn we jong: SterkerVerf is officieel opgericht in 2025. Maar de mensen die het werk doen, schilderen al veel langer. Het vak is bij ons doorgegeven van vader op zoon: ervaren vakmensen die hun routine in de praktijk hebben opgebouwd.</p>
+      <p>Die combinatie maakt ons sterk: de frisse blik en service van een nieuw bedrijf, gedragen door ervaren vakmensen. Iedereen bij ons is bovendien <b>professioneel opgeleid bij Sigma en Sikkens</b>, twee toonaangevende namen in verf en afwerking.</p>
+      <div class="badges">
+        <div class="badge"><span class="bi" style="background:var(--c-blue)">S</span><div><span class="bd">Sigma</span><small>Professioneel opgeleid</small></div></div>
+        <div class="badge"><span class="bi" style="background:var(--c-orange)">S</span><div><span class="bd">Sikkens</span><small>Professioneel opgeleid</small></div></div>
+      </div>
+    </div>
+    <div class="img"><img src="assets/i_doing_emery.jpeg" alt="Vakman aan het werk: schuren als voorbereiding"></div>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head center reveal"><span class="eyebrow">Waar we voor staan</span><h2>Vakmanschap, van voorbereiding tot finish</h2></div>
+    <div class="vals">
+      <div class="val reveal"><div class="vi" style="background:var(--c-red)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 6L9 17l-5-5"/></svg></div><h3>Eerlijk &amp; helder</h3><p>Een vaste prijs vooraf en duidelijke afspraken. Geen verrassingen achteraf.</p></div>
+      <div class="val reveal"><div class="vi" style="background:var(--c-teal)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div><h3>Kwaliteit eerst</h3><p>Goede voorbereiding, A-merk materiaal en een strakke afwerking die meegaat.</p></div>
+      <div class="val reveal"><div class="vi" style="background:var(--c-green)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 21h18M5 21V9l7-5 7 5v12"/></svg></div><h3>Netjes opgeleverd</h3><p>We dekken alles goed af en laten uw woning schoon en opgeruimd achter.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">In beeld</span><h2>Ons werk &amp; vakmanschap</h2></div>
+    <div class="media">
+      <div class="m video reveal" id="videoCard">
+        <img src="assets/just_ceiling_painted_by_isolating_walls.jpeg" alt="Aan het werk, video volgt">
+        <div class="play"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="var(--terra)"><path d="M8 5v14l11-7z"/></svg></span></div>
+        <span class="lbl">Video binnenkort</span>
+      </div>
+      <div class="media-col">
+        <div class="m reveal"><img src="assets/green_room_painted_walls.jpeg" alt="Geschilderde woonkamer"><span class="lbl">Foto</span></div>
+        <div class="m reveal">
+          <svg viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-label="Illustratie vakman">
+            <rect width="800" height="520" fill="#EDE7DB"/>
+            <rect x="0" y="0" width="800" height="360" fill="#E7E0D2"/>
+            <rect x="470" y="60" width="250" height="240" fill="#CDE2EE"/>
+            <rect x="0" y="360" width="800" height="160" fill="#C9A779"/>
+            <!-- ladder --><g stroke="#9C7C58" stroke-width="9" stroke-linecap="round" fill="none"><line x1="150" y1="120" x2="120" y2="400"/><line x1="210" y1="120" x2="240" y2="400"/><line x1="138" y1="200" x2="198" y2="200"/><line x1="132" y1="270" x2="222" y2="270"/><line x1="126" y1="340" x2="234" y2="340"/></g>
+            <!-- painter figure --><circle cx="430" cy="180" r="34" fill="#E0A07A"/><rect x="402" y="214" width="58" height="120" rx="18" fill="#2E7E9E"/><rect x="402" y="214" width="58" height="60" rx="18" fill="#E08A2B"/>
+            <!-- roller --><line x1="455" y1="150" x2="540" y2="90" stroke="#3A3A3C" stroke-width="8"/><rect x="540" y="70" width="60" height="22" rx="8" fill="#A8473B" transform="rotate(-35 570 81)"/>
+            <!-- paint can --><rect x="300" y="430" width="70" height="60" rx="6" fill="#2E8C9E"/><ellipse cx="335" cy="430" rx="35" ry="9" fill="#3aa7b8"/>
+          </svg>
+          <span class="lbl">Illustratie</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSOONLIJK CONTACT (oranje + blauw) -->
+<section>
+  <div class="wrap">
+    <div class="furkan reveal">
+      <div class="pic">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-label="Even kennismaken">
+          <rect width="400" height="400" fill="#EDE7DB"/>
+          <circle cx="200" cy="205" r="152" fill="#F3E7C4"/>
+          <!-- schoteltje -->
+          <ellipse cx="195" cy="296" rx="116" ry="26" fill="#2E7E9E"/>
+          <!-- kopje -->
+          <path d="M118 198 h150 v44 a75 56 0 0 1 -150 0 Z" fill="#fff" stroke="#2E7E9E" stroke-width="7"/>
+          <path d="M268 208 q48 6 44 48 q-4 34 -40 32" fill="none" stroke="#2E7E9E" stroke-width="13"/>
+          <ellipse cx="193" cy="200" rx="68" ry="13" fill="#6b4a32"/>
+          <!-- stoom -->
+          <g stroke="#E08A2B" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.85">
+            <path d="M168 158 q-13 -19 0 -38 q13 -19 0 -38"/>
+            <path d="M212 158 q-13 -19 0 -38 q13 -19 0 -38"/>
+          </g>
+          <!-- chatbubbel -->
+          <g>
+            <rect x="250" y="86" width="100" height="66" rx="17" fill="#E08A2B"/>
+            <path d="M278 152 l0 24 l24 -24 Z" fill="#E08A2B"/>
+            <circle cx="278" cy="119" r="6.5" fill="#fff"/><circle cx="300" cy="119" r="6.5" fill="#fff"/><circle cx="322" cy="119" r="6.5" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+      <div class="ftxt">
+        <span class="eyebrow">Persoonlijk &amp; dichtbij</span>
+        <h2>Even kennismaken? Daar houden we van.</h2>
+        <p>Liever een echt gesprek dan een formulier? Heel begrijpelijk. Bel of app ons gerust. U krijgt meteen iemand die met u meedenkt, zonder verkooppraatjes.</p>
+        <p>Bij SterkerVerf heeft u <b>één vast aanspreekpunt</b> van begin tot eind. Zo weet u altijd bij wie u terecht kunt.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+          <a href="tel:+31687979346" class="btn btn-light">Bel +31 6 87979346</a>
+          <a href="mailto:info@sterkerverf.nl" class="btn" style="background:rgba(255,255,255,.16);color:#fff;border:1.5px solid rgba(255,255,255,.6)">Mail ons</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" style="background:var(--ink);color:#fff;text-align:center">
+  <div class="wrap reveal">
+    <h2 style="font-size:clamp(28px,3.8vw,44px);margin-bottom:14px">Benieuwd wat we voor u kunnen doen?</h2>
+    <p style="font-size:18px;opacity:.82;max-width:520px;margin:0 auto 28px">Vraag vrijblijvend een offerte aan, of bekijk eerst ons werk.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="offerte.html" class="btn btn-primary">Offerte aanvragen</a>
+      <a href="portfolio.html" class="btn btn-light">Bekijk portfolio</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-top"></div>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf">
+        <p>Vakkundig schilder-, behang- en lakwerk voor woningen in heel Nederland. Officieel sinds 2025.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Menu</h4>
+        <a href="index.html">Home</a><a href="over-ons.html">Over ons</a><a href="diensten.html">Diensten</a><a href="portfolio.html">Portfolio</a><a href="kleurkiezer.html">3D-kleurkiezer</a><a href="offerte.html">Offerte aanvragen</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="tel:+31687979346" class="fv">+31 6 87979346</a>
+        <a href="mailto:info@sterkerverf.nl" class="fv">info@sterkerverf.nl</a>
+        <span class="fv">Werkzaam in heel Nederland</span>
+        <span class="fv">KvK 98343599 · BTW NL005325294B30</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year></span> SterkerVerf · Schildersbedrijf</span>
+      <span>Transformeer uw woning</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+  document.getElementById('videoCard').addEventListener('click', () => {
+    alert('De bedrijfsvideo komt binnenkort. Heeft u al beeldmateriaal? Dan zetten we het hier.');
+  });
+</script>
+</body>
+</html>

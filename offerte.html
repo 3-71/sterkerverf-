@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offerte aanvragen · SterkerVerf</title>
+<meta name="description" content="Vraag vrijblijvend een offerte aan voor schilder-, behang- of lakwerk bij SterkerVerf in heel Nederland.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .off{display:grid;grid-template-columns:.8fr 1.2fr;gap:50px;align-items:start;padding-bottom:96px}
+  @media(max-width:860px){.off{grid-template-columns:1fr;gap:36px}}
+  .off-side .pt{display:flex;gap:13px;align-items:flex-start;margin-bottom:16px;font-size:15.5px}
+  .off-side .pt svg{flex:none;margin-top:2px;color:var(--c-green)}
+  .off-direct{border-top:1px solid var(--line);margin-top:26px;padding-top:24px}
+  .off-direct .di{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .off-direct .di .ic{width:40px;height:40px;border-radius:11px;background:var(--sand);display:flex;align-items:center;justify-content:center;color:var(--terra);flex:none}
+  .off-direct .di b{font-size:15px;display:block}
+  .off-direct .di span{font-size:13px;color:var(--muted)}
+
+  form.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px;box-shadow:var(--shadow)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:520px){.grid2{grid-template-columns:1fr}}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px}
+  .field label .opt{color:var(--muted);font-weight:400}
+  .field input,.field select,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:13px 15px;font-family:inherit;font-size:15px;color:var(--ink);background:#FCFAF6;transition:.18s}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--terra);background:#fff}
+  .field textarea{resize:vertical;min-height:104px}
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:30px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;transition:.18s}
+  .chip:hover{border-color:var(--terra);color:var(--ink)}
+  .chip.sel{background:var(--terra);border-color:var(--terra);color:#fff}
+  form .btn{width:100%;justify-content:center;margin-top:6px}
+  .note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:14px}
+  .success{display:none;text-align:center;padding:30px 10px}
+  .success.on{display:block}
+  .success .ic{width:72px;height:72px;border-radius:50%;background:rgba(78,158,92,.14);color:var(--c-green);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .success h2{font-size:26px;margin-bottom:10px}
+  .success p{color:var(--muted);max-width:380px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="brand" aria-label="SterkerVerf home"><img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="over-ons.html">Over ons</a>
+      <a href="diensten.html">Diensten</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="kleurkiezer.html">3D-kleurkiezer</a>
+      <a href="werkwijze.html">Werkwijze</a>
+      <a href="offerte.html" class="nav-cta">Offerte</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="phero">
+  <div class="wrap">
+    <span class="eyebrow">Offerte aanvragen</span>
+    <h1>Vraag uw <span class="em">vrijblijvende offerte</span> aan</h1>
+    <p class="lead">Vertel kort wat u wilt laten doen. We nemen contact met u op voor een duidelijke prijs vooraf.</p>
+  </div>
+</section>
+
+<div class="wrap off">
+  <div class="off-side">
+    <div class="pt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Vrijblijvend, u zit nergens aan vast</div>
+    <div class="pt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Een duidelijke, vaste prijs vooraf</div>
+    <div class="pt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Snel een reactie op uw aanvraag</div>
+    <div class="off-direct">
+      <div class="di"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><div><b><a href="tel:+31687979346" style="color:inherit">+31 6 87979346</a></b><span>Bel of app ons direct</span></div></div>
+      <div class="di"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg></span><div><b><a href="mailto:info@sterkerverf.nl" style="color:inherit">info@sterkerverf.nl</a></b><span>Mail ons gerust</span></div></div>
+      <div class="di"><span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>Heel Nederland</b><span>ons werkgebied</span></div></div>
+    </div>
+  </div>
+
+  <form class="card" id="quoteForm" onsubmit="return submitQuote(event)">
+    <div class="field">
+      <label>Type werk</label>
+      <div class="chips" id="typeChips">
+        <button type="button" class="chip sel" data-type="Schilderwerk">Schilderwerk</button>
+        <button type="button" class="chip" data-type="Behangen">Behangen</button>
+        <button type="button" class="chip" data-type="Lakwerk">Lakwerk</button>
+        <button type="button" class="chip" data-type="Weet ik nog niet">Weet ik nog niet</button>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Naam *</label><input type="text" name="naam" required placeholder="Uw naam"></div>
+      <div class="field"><label>Telefoon *</label><input type="tel" name="telefoon" required placeholder="06 ..."></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>E-mail *</label><input type="email" name="email" required placeholder="naam@email.nl"></div>
+      <div class="field"><label>Plaats</label><input type="text" name="plaats" placeholder="Bijv. Amsterdam"></div>
+    </div>
+    <div class="field"><label>Omschrijving van het project</label><textarea name="bericht" placeholder="Bijv. woonkamer en hal schilderen, ca. 30 m², muren en plafond."></textarea></div>
+    <div class="field"><label>Gekozen kleuren <span class="opt">(uit de 3D-kleurkiezer, optioneel)</span></label><input type="text" name="kleuren" placeholder="Bijv. muren saliegroen, kozijn wit"></div>
+    <button type="submit" class="btn btn-primary">Verstuur aanvraag
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <p class="note">Uw mailprogramma opent met de aanvraag erin. Controleer en druk op verzenden.</p>
+  </form>
+
+  <div class="success card" id="successBox" style="grid-column:2;display:none">
+    <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <h2>Bijna klaar!</h2>
+    <p>Uw mailprogramma opent met de aanvraag. Druk op verzenden, dan komt hij bij SterkerVerf binnen. Geen mailprogramma? Bel of app ons op +31 6 87979346.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-top"></div>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf">
+        <p>Vakkundig schilder-, behang- en lakwerk voor woningen in heel Nederland. Officieel sinds 2025.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Menu</h4>
+        <a href="index.html">Home</a><a href="over-ons.html">Over ons</a><a href="diensten.html">Diensten</a><a href="portfolio.html">Portfolio</a><a href="kleurkiezer.html">3D-kleurkiezer</a><a href="offerte.html">Offerte aanvragen</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="tel:+31687979346" class="fv">+31 6 87979346</a>
+        <a href="mailto:info@sterkerverf.nl" class="fv">info@sterkerverf.nl</a>
+        <span class="fv">Werkzaam in heel Nederland</span>
+        <span class="fv">KvK 98343599 · BTW NL005325294B30</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year></span> SterkerVerf · Schildersbedrijf</span>
+      <span>Transformeer uw woning</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+  let chosenType = 'Schilderwerk';
+  // prefill gekozen kleuren vanuit de 3D-kleurkiezer (?kleuren=...)
+  (function(){
+    const k = new URLSearchParams(location.search).get('kleuren');
+    if(k){ const f = document.querySelector('[name="kleuren"]'); if(f){ f.value = k; f.scrollIntoView({behavior:'smooth',block:'center'}); } }
+  })();
+  document.querySelectorAll('#typeChips .chip').forEach(c => c.addEventListener('click', () => {
+    document.querySelectorAll('#typeChips .chip').forEach(x => x.classList.remove('sel'));
+    c.classList.add('sel'); chosenType = c.dataset.type;
+  }));
+  function submitQuote(e){
+    e.preventDefault();
+    const f = e.target;
+    const ontvanger = 'info@sterkerverf.nl';
+    const onderwerp = 'Offerte-aanvraag: ' + chosenType;
+    const regels = [
+      'Nieuwe offerte-aanvraag via de website',
+      '--------------------------------------',
+      'Type werk:    ' + chosenType,
+      'Naam:         ' + (f.naam.value || '-'),
+      'Telefoon:     ' + (f.telefoon.value || '-'),
+      'E-mail:       ' + (f.email.value || '-'),
+      'Plaats:       ' + (f.plaats.value || '-'),
+      'Kleuren:      ' + (f.kleuren.value || '-'),
+      '',
+      'Omschrijving:',
+      (f.bericht.value || '-')
+    ].join('\n');
+    window.location.href = 'mailto:' + ontvanger + '?subject=' + encodeURIComponent(onderwerp) + '&body=' + encodeURIComponent(regels);
+    f.style.display = 'none';
+    document.getElementById('successBox').style.display = 'block';
+    return false;
+  }
+</script>
+</body>
+</html>
