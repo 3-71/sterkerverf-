@@ -72,7 +72,7 @@
 
 <header class="nav">
   <div class="wrap nav-inner">
-    <a href="index.html" class="brand" aria-label="SterkerVerf home"><img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf"></a>
+    <a href="index.html" class="brand" aria-label="SterkerVerf home"><img src="sterkerverf_logo_transparent.png" alt="SterkerVerf"></a>
     <nav class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
       <a href="over-ons.html">Over ons</a>
@@ -181,7 +181,7 @@
   <div class="wrap">
     <div class="foot-inner">
       <div class="foot-brand">
-        <img src="assets/sterkerverf_logo_transparent.png" alt="SterkerVerf">
+        <img src="sterkerverf_logo_transparent.png" alt="SterkerVerf">
         <p>Vakkundig schilder-, behang- en lakwerk voor woningen in heel Nederland. Officieel sinds 2025.</p>
       </div>
       <div class="foot-col">
@@ -386,8 +386,8 @@ try {
     const mat=new THREE.MeshStandardMaterial({ color:'#bbb', roughness:0.6 });
     texLoader.load(url, t=>{ t.colorSpace=THREE.SRGBColorSpace; mat.map=t; mat.color.set('#fff'); mat.needsUpdate=true; });
     const pic=new THREE.Mesh(new THREE.PlaneGeometry(w,h), mat); pic.position.set(0,0,0.025); g.add(pic); }
-  framedPhoto('assets/A_house_colored_nice_green.jpeg',0.95,0.72,[-0.35,1.75,-D/2+0.06],0);
-  framedPhoto('assets/walls_painted_a_house_badroom_floor.jpeg',0.8,1.0,[-W/2+0.06,1.55,-1.2],Math.PI/2);
+  framedPhoto('A_house_colored_nice_green.jpeg',0.95,0.72,[-0.35,1.75,-D/2+0.06],0);
+  framedPhoto('walls_painted_a_house_badroom_floor.jpeg',0.8,1.0,[-W/2+0.06,1.55,-1.2],Math.PI/2);
 
   // lights
   const hemi = new THREE.HemisphereLight('#ffffff','#b1a184',0.6); scene.add(hemi);
