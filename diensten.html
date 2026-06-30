@@ -36,6 +36,20 @@
   .paintc .pi{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px}
   .paintc h3{font-size:17px;margin-bottom:7px}
   .paintc p{font-size:14.5px;color:var(--muted)}
+  .paintc{cursor:pointer;position:relative}
+  .paintc .more{display:block;margin-top:12px;font-size:13px;font-weight:700;color:var(--terra)}
+  .paintc:focus-visible{outline:3px solid var(--c-teal);outline-offset:2px}
+  /* modal */
+  .pmodal{position:fixed;inset:0;background:rgba(15,12,10,.62);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:300;padding:24px}
+  .pmodal.open{display:flex}
+  .pmodal-card{background:#fff;border-radius:22px;max-width:560px;width:100%;max-height:88vh;overflow:auto;box-shadow:var(--shadow);position:relative;animation:pmIn .25s ease}
+  @keyframes pmIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .pmodal-illu{aspect-ratio:16/10;background:var(--sand);border-radius:22px 22px 0 0;overflow:hidden}
+  .pmodal-illu svg{width:100%;height:100%;display:block}
+  .pmodal-body{padding:26px 28px 30px}
+  .pmodal-body h3{font-size:23px;margin-bottom:12px}
+  .pmodal-body p{font-size:15.5px;color:var(--muted);margin-bottom:0}
+  .pmodal-close{position:absolute;top:14px;right:16px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:24px;line-height:1;cursor:pointer;color:var(--ink);z-index:1;box-shadow:0 4px 12px rgba(0,0,0,.15)}
 </style>
 </head>
 <body>
@@ -200,6 +214,14 @@
   </div>
 </section>
 
+<div class="pmodal" id="pmodal" aria-hidden="true">
+  <div class="pmodal-card" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <button class="pmodal-close" id="pmClose" aria-label="Sluiten">&times;</button>
+    <div class="pmodal-illu" id="pmIllu"></div>
+    <div class="pmodal-body"><h3 id="pmTitle"></h3><div id="pmText"></div></div>
+  </div>
+</div>
+
 <footer>
   <div class="foot-top"></div>
   <div class="wrap">
@@ -228,5 +250,53 @@
 </footer>
 
 <script src="main.js"></script>
+<script>
+(function(){
+  const P = [
+    { t:"Watergedragen verf (op waterbasis)",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="46" y="38" width="180" height="174" rx="6" fill="#bcd0e8"/><rect x="150" y="56" width="26" height="118" rx="13" fill="#eef1f2" stroke="#cdd2d5" stroke-width="2"/><path d="M176 70h34v18" fill="none" stroke="#9aa0a4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="200" y="120" width="20" height="60" rx="9" fill="#A8473B"/><path d="M312 80s32 36 32 58a32 32 0 0 1-64 0c0-22 32-58 32-58z" fill="#2B6CA8"/><circle cx="324" cy="146" r="9" fill="#fff" opacity=".45"/></svg>`,
+      d:"Verf op waterbasis (acryl/latex) is binnenshuis de standaard. Ze droogt snel, geeft weinig geur en is milieuvriendelijker dan ouderwetse verf. Perfect voor muren en plafonds, en met moderne watergedragen lakken ook prima voor binnenhoutwerk. Kwasten en rollers spoel je gewoon uit met water." },
+    { t:"Terpentinegedragen verf (alkyd)",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="150" y="28" width="120" height="200" rx="6" fill="#A8473B"/><rect x="166" y="46" width="88" height="68" rx="4" fill="#8a3a30"/><rect x="166" y="126" width="88" height="84" rx="4" fill="#8a3a30"/><circle cx="250" cy="138" r="6" fill="#E8C14E"/><path d="M150 28 H188 L150 118 Z" fill="#fff" opacity=".16"/></svg>`,
+      d:"Alkydverf op terpentinebasis vormt een harde, dekkende laag met een mooie, diepe glans en hecht uitstekend op hout en metaal. Daardoor is ze sterk op intensief belast houtwerk, zoals buitenkozijnen en deuren. Ze droogt langzamer en heeft meer geur, dus zorg voor goede ventilatie." },
+    { t:"Spuitwerk (airless & fijnspuit)",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="40" y="40" width="150" height="170" rx="6" fill="#cfe0dd"/><g fill="#2E8C9E" opacity=".5"><circle cx="120" cy="72" r="4"/><circle cx="150" cy="98" r="5"/><circle cx="108" cy="120" r="3"/><circle cx="162" cy="150" r="4"/><circle cx="128" cy="172" r="5"/><circle cx="175" cy="115" r="3"/></g><g transform="translate(244,92)"><rect x="0" y="0" width="72" height="22" rx="6" fill="#3A3A3C"/><rect x="-7" y="2" width="12" height="18" rx="3" fill="#2E8C9E"/><rect x="42" y="22" width="16" height="42" rx="4" fill="#3A3A3C"/><rect x="22" y="-26" width="20" height="28" rx="4" fill="#9aa0a4"/></g></svg>`,
+      d:"Met een spuitinstallatie (airless of fijnspuit) brengen we verf in een fijne nevel aan. Het resultaat is kakelglad en naadloos, zonder roller- of kwaststructuur. Ideaal voor deuren, kozijnen, radiatoren, plafonds en bijvoorbeeld keukenkastjes. We dekken de omgeving zorgvuldig af, want overspray wil je vermijden." },
+    { t:"Structuur- & korrelverf",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="60" y="38" width="280" height="174" rx="8" fill="#E8C14E" opacity=".35"/><g fill="#b9860b" opacity=".6"><circle cx="92" cy="78" r="4.5"/><circle cx="124" cy="78" r="4.5"/><circle cx="156" cy="78" r="4.5"/><circle cx="188" cy="78" r="4.5"/><circle cx="220" cy="78" r="4.5"/><circle cx="252" cy="78" r="4.5"/><circle cx="284" cy="78" r="4.5"/><circle cx="316" cy="78" r="4.5"/><circle cx="100" cy="118" r="4.5"/><circle cx="132" cy="118" r="4.5"/><circle cx="164" cy="118" r="4.5"/><circle cx="196" cy="118" r="4.5"/><circle cx="228" cy="118" r="4.5"/><circle cx="260" cy="118" r="4.5"/><circle cx="292" cy="118" r="4.5"/><circle cx="324" cy="118" r="4.5"/><circle cx="92" cy="158" r="4.5"/><circle cx="124" cy="158" r="4.5"/><circle cx="156" cy="158" r="4.5"/><circle cx="188" cy="158" r="4.5"/><circle cx="220" cy="158" r="4.5"/><circle cx="252" cy="158" r="4.5"/><circle cx="284" cy="158" r="4.5"/><circle cx="316" cy="158" r="4.5"/></g></svg>`,
+      d:"Deze verf bevat fijne korrels of kiezel die de muur een voelbaar reliëf geven. Het grote voordeel: kleine oneffenheden en haarscheurtjes vallen weg onder de structuur. Bovendien is de laag slijtvast, wat fijn is in gangen en trappenhuizen. De korrelgrootte bepaalt hoe grof of subtiel het wordt." },
+    { t:"Zweedse verf",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="64" y="118" width="200" height="98" fill="#9B2D27"/><g stroke="#7c241f" stroke-width="2"><path d="M64 140h200M64 162h200M64 184h200M64 206h200"/></g><path d="M54 120 L164 58 L274 120 Z" fill="#6E3B2A"/><rect x="146" y="160" width="38" height="56" fill="#3A3A3C"/><rect x="300" y="150" width="10" height="66" fill="#6E3B2A"/><circle cx="305" cy="138" r="28" fill="#4E9E5C"/></svg>`,
+      d:"Zweedse verf (van oorsprong de bekende 'falurood') is een matte verf op lijnoliebasis voor buitenhout. Ze trekt in het hout en laat het ademen, waardoor ze niet afbladdert maar langzaam vervaagt. Heel geschikt voor houten gevels, schuttingen, tuinhuizen en rabatdelen. Bijwerken is simpel: schoonmaken en een nieuwe laag, zonder tot op het hout te schuren." },
+    { t:"Glansgraden: mat tot hoogglans",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="40" y="50" width="92" height="150" rx="10" fill="#6E655C"/><rect x="154" y="50" width="92" height="150" rx="10" fill="#6E655C"/><path d="M168 58h26v134h-26z" fill="#fff" opacity=".14"/><rect x="268" y="50" width="92" height="150" rx="10" fill="#6E655C"/><path d="M282 58h44v134h-44z" fill="#fff" opacity=".34"/></svg>`,
+      d:"De glansgraad bepaalt de uitstraling én de bruikbaarheid. Mat geeft een rustige, moderne look en verbergt oneffenheden, maar is gevoeliger voor vegen. Zijdeglans is een fijne middenweg: mooi en goed afneembaar. Hoogglans is het strakst en het meest robuust, ideaal voor deuren en kozijnen. We adviseren per ruimte de juiste keuze." },
+    { t:"Krijtverf",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="118" y="46" width="164" height="166" rx="6" fill="#C98A7E"/><line x1="200" y1="46" x2="200" y2="212" stroke="#b07568" stroke-width="3"/><line x1="118" y1="129" x2="282" y2="129" stroke="#b07568" stroke-width="3"/><circle cx="188" cy="118" r="5" fill="#7C3128"/><circle cx="212" cy="118" r="5" fill="#7C3128"/><circle cx="188" cy="140" r="5" fill="#7C3128"/><circle cx="212" cy="140" r="5" fill="#7C3128"/></svg>`,
+      d:"Krijtverf geeft een fluweelmatte, ietwat poederige afwerking met veel karakter. Ze hecht op de meeste ondergronden met weinig voorbereiding, waardoor ze populair is voor meubels, kasten en accentdelen. Voor extra bescherming kan er een waslaag of matte vernis overheen. Voor zwaar belaste vlakken is het niet de meest slijtvaste keuze." },
+    { t:"Kalkverf & betonlook",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><rect x="50" y="40" width="300" height="170" rx="8" fill="#d8d2c7"/><g fill="#c4bcae" opacity=".7"><ellipse cx="140" cy="100" rx="80" ry="40"/><ellipse cx="262" cy="150" rx="92" ry="46"/><ellipse cx="300" cy="80" rx="52" ry="30"/></g><g fill="#e6e1d6" opacity=".6"><ellipse cx="110" cy="172" rx="60" ry="28"/><ellipse cx="240" cy="68" rx="50" ry="26"/></g></svg>`,
+      d:"Kalkverf is een minerale, ademende verf die een levendige, wolkige diepte geeft — mat en natuurlijk. Betonlook bouwt met meerdere dunne lagen een strakke, industriële uitstraling op. Beide passen mooi in een rustige, natuurlijke woonstijl. We brengen ze in lagen aan voor precies het juiste effect." },
+    { t:"Anti-schimmel & vochtregulerend",
+      illu:`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="250" fill="#EFE8DB"/><g fill="#cfe0dd" stroke="#b8d0cc" stroke-width="2"><rect x="56" y="44" width="72" height="72"/><rect x="128" y="44" width="72" height="72"/><rect x="56" y="116" width="72" height="72"/><rect x="128" y="116" width="72" height="72"/></g><g transform="translate(266,76)"><path d="M34 0s30 28 30 50a30 30 0 0 1-60 0C4 28 34 0 34 0z" fill="#2B6CA8"/><path d="M20 50l9 9 16-18" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`,
+      d:"Voor badkamers, keukens en kelders gebruiken we verf die bestand is tegen condens en vocht. Ze bevat middelen die schimmelvorming tegengaan en is goed afneembaar. Een goede ondergrond en ventilatie blijven belangrijk, maar deze verf geeft een flinke voorsprong tegen zwarte randjes en schimmelplekken." }
+  ];
+  const modal=document.getElementById('pmodal');
+  if(!modal) return;
+  const illuEl=document.getElementById('pmIllu'), titleEl=document.getElementById('pmTitle'), textEl=document.getElementById('pmText');
+  let lastFocus=null;
+  function openP(i){ const p=P[i]; if(!p) return; lastFocus=document.activeElement; illuEl.innerHTML=p.illu; titleEl.textContent=p.t; textEl.innerHTML='<p>'+p.d+'</p>'; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.getElementById('pmClose').focus(); }
+  function closeP(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); if(lastFocus) lastFocus.focus(); }
+  document.querySelectorAll('.paintc').forEach((c,i)=>{
+    const hint=document.createElement('span'); hint.className='more'; hint.textContent='Meer info →'; c.appendChild(hint);
+    c.setAttribute('role','button'); c.tabIndex=0;
+    c.addEventListener('click',()=>openP(i));
+    c.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openP(i); } });
+  });
+  document.getElementById('pmClose').addEventListener('click',closeP);
+  modal.addEventListener('click',e=>{ if(e.target===modal) closeP(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeP(); });
+})();
+</script>
 </body>
 </html>
