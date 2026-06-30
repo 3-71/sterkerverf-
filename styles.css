@@ -25,8 +25,9 @@ section{padding:96px 0}
 /* ---------- NAV ---------- */
 header.nav{position:sticky;top:0;z-index:100;background:rgba(247,243,236,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px;gap:20px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{height:30px;width:auto}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .wordmark{font-family:'Sora',sans-serif;font-weight:800;font-size:25px;letter-spacing:-.03em;color:var(--terra);line-height:1;white-space:nowrap}
+.brand .brand-swirl{height:40px;width:auto;display:block}
 .nav-links{display:flex;align-items:center;gap:30px}
 .nav-links a{font-size:15px;font-weight:500;color:var(--ink);transition:color .2s;position:relative}
 .nav-links a:hover{color:var(--terra)}
@@ -73,8 +74,16 @@ header.nav{position:sticky;top:0;z-index:100;background:rgba(247,243,236,.82);ba
 }
 .nav-links a[href="kleurkiezer.html"]:hover::before{opacity:.95;animation-duration:3.5s}
 @media(max-width:860px){
-  .nav-links a[href="kleurkiezer.html"]::before{height:160%;width:60%}
+  .nav-links a[href="kleurkiezer.html"]{overflow:hidden}
+  .nav-links a[href="kleurkiezer.html"]::before{
+    left:0;top:0;width:100%;height:100%;transform:none;border-radius:0;
+    background:linear-gradient(90deg,
+      rgba(194,74,46,.20),rgba(224,138,43,.18),rgba(232,193,78,.16),
+      rgba(78,158,92,.16),rgba(46,140,158,.18),rgba(43,108,168,.20));
+    filter:blur(9px);opacity:.5;animation:kkNevelMob 8s ease-in-out infinite;
+  }
 }
+@keyframes kkNevelMob{0%,100%{opacity:.36}50%{opacity:.55}}
 
 /* ---------- BUTTONS ---------- */
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:inherit;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:32px;cursor:pointer;border:none;transition:transform .2s,background .2s,box-shadow .2s}
@@ -118,6 +127,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.72);padding:0 0 34px}
 .foot-col a:hover{color:#fff}
 .foot-bottom{border-top:1px solid var(--line-dark);margin-top:46px;padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:rgba(255,255,255,.5)}
 @media(max-width:760px){.foot-inner{grid-template-columns:1fr;gap:30px}}
+
+/* ---------- MOBIEL: minder witruimte tussen secties ---------- */
+@media(max-width:860px){
+  section{padding:56px 0}
+  .sec-head{margin-bottom:30px}
+  .phero{padding:46px 0 8px}
+}
 
 /* ---------- REVEAL ---------- */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
