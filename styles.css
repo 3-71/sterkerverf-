@@ -61,16 +61,16 @@ header.nav{position:sticky;top:0;z-index:100;background:rgba(247,243,236,.82);ba
   content:"";position:absolute;z-index:-1;pointer-events:none;
   left:50%;top:50%;width:135%;height:280%;transform:translate(-50%,-50%);
   background:
-    radial-gradient(42% 52% at 28% 42%, rgba(194,74,46,.55), transparent 72%),
-    radial-gradient(46% 56% at 72% 56%, rgba(46,140,158,.55), transparent 72%),
-    radial-gradient(40% 50% at 56% 78%, rgba(232,193,78,.50), transparent 72%),
-    radial-gradient(46% 56% at 44% 24%, rgba(43,108,168,.48), transparent 72%);
-  filter:blur(9px);opacity:.6;border-radius:50%;
+    radial-gradient(42% 52% at 28% 42%, rgba(194,74,46,.85), transparent 72%),
+    radial-gradient(46% 56% at 72% 56%, rgba(46,140,158,.85), transparent 72%),
+    radial-gradient(40% 50% at 56% 78%, rgba(232,193,78,.72), transparent 72%),
+    radial-gradient(46% 56% at 44% 24%, rgba(43,108,168,.78), transparent 72%);
+  filter:blur(8px);opacity:.7;border-radius:50%;
   animation:kkNevel 7.5s ease-in-out infinite;
 }
 @keyframes kkNevel{
-  0%,100%{opacity:.5;transform:translate(-50%,-50%) rotate(0deg) scale(1)}
-  50%{opacity:.9;transform:translate(-50%,-50%) rotate(10deg) scale(1.1)}
+  0%,100%{opacity:.68;transform:translate(-50%,-50%) rotate(0deg) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) rotate(10deg) scale(1.12)}
 }
 .nav-links a[href="kleurkiezer.html"]:hover::before{opacity:.95;animation-duration:3.5s}
 @media(max-width:860px){
@@ -84,6 +84,24 @@ header.nav{position:sticky;top:0;z-index:100;background:rgba(247,243,236,.82);ba
   }
 }
 @keyframes kkNevelMob{0%,100%{opacity:.36}50%{opacity:.55}}
+
+/* 3D-knop met nevel-glow (Home) — ingetogen */
+.kk-glow{position:relative;isolation:isolate;overflow:hidden}
+.kk-glow::before{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:165%;height:270%;transform:translate(-50%,-50%);
+  background:
+    radial-gradient(44% 62% at 22% 50%, rgba(194,74,46,.6), transparent 70%),
+    radial-gradient(48% 66% at 78% 50%, rgba(46,140,158,.6), transparent 70%),
+    radial-gradient(44% 60% at 55% 66%, rgba(232,193,78,.5), transparent 70%),
+    radial-gradient(48% 62% at 45% 34%, rgba(43,108,168,.52), transparent 70%);
+  filter:blur(13px);opacity:.6;border-radius:50%;animation:kkNevelSoft 8s ease-in-out infinite;pointer-events:none}
+.kk-glow:hover::before{opacity:.8;animation-duration:5s}
+@keyframes kkNevelSoft{
+  0%,100%{opacity:.5;transform:translate(-50%,-50%) rotate(0deg) scale(1)}
+  50%{opacity:.72;transform:translate(-50%,-50%) rotate(5deg) scale(1.05)}
+}
+@media(prefers-reduced-motion:reduce){
+  .kk-glow::before,.nav-links a[href="kleurkiezer.html"]::before{animation:none}
+}
 
 /* ---------- BUTTONS ---------- */
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:inherit;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:32px;cursor:pointer;border:none;transition:transform .2s,background .2s,box-shadow .2s}
@@ -126,6 +144,17 @@ footer{background:var(--ink);color:rgba(255,255,255,.72);padding:0 0 34px}
 .foot-col a,.foot-col .fv{display:block;font-size:14.5px;color:rgba(255,255,255,.72);margin-bottom:11px;transition:color .2s}
 .foot-col a:hover{color:#fff}
 .foot-bottom{border-top:1px solid var(--line-dark);margin-top:46px;padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:rgba(255,255,255,.5)}
+.foot-legal a{color:rgba(255,255,255,.62);text-decoration:none;transition:color .2s}
+.foot-legal a:hover{color:#fff}
+/* WhatsApp zweefknop (geinjecteerd via main.js, op elke pagina) */
+.wa-fab{position:fixed;right:22px;bottom:22px;z-index:250;display:flex;align-items:center;gap:0;height:58px;padding:0;border-radius:32px;background:#25D366;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.22);overflow:hidden;transition:transform .18s,box-shadow .18s,padding .22s}
+.wa-fab .wa-ic{width:58px;height:58px;flex:none;display:flex;align-items:center;justify-content:center}
+.wa-fab .wa-ic svg{width:31px;height:31px}
+.wa-fab .wa-txt{max-width:0;white-space:nowrap;font-family:'Sora',sans-serif;font-weight:600;font-size:15px;opacity:0;transition:max-width .25s,opacity .2s,padding .25s;overflow:hidden}
+.wa-fab:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.wa-fab:hover .wa-txt{max-width:200px;opacity:1;padding-right:20px}
+@media(max-width:600px){.wa-fab{right:16px;bottom:16px;height:54px}.wa-fab .wa-ic{width:54px;height:54px}.wa-fab .wa-txt{display:none}}
+@media(prefers-reduced-motion:reduce){.wa-fab,.wa-fab .wa-txt{transition:none}}
 @media(max-width:760px){.foot-inner{grid-template-columns:1fr;gap:30px}}
 
 /* ---------- MOBIEL: minder witruimte tussen secties ---------- */

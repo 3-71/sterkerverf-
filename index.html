@@ -37,11 +37,13 @@
 
   /* BRUSHSTROKE DIVIDER (huisstijl-handtekening) */
   .brush-divide{line-height:0;margin:6px 0 -8px;position:relative}
-  .brush-divide svg{display:block;width:100%;height:clamp(40px,5vw,62px)}
+  .brush-divide svg{display:block;width:100%;height:clamp(40px,5vw,62px);transform-origin:center;animation:brushWave 6s ease-in-out infinite}
+  @keyframes brushWave{0%,100%{transform:translateY(0) scaleY(1)}25%{transform:translateY(-3px) scaleY(1.1)}50%{transform:translateY(3px) scaleY(.92)}75%{transform:translateY(-1px) scaleY(1.05)}}
+  @media(prefers-reduced-motion:reduce){.brush-divide svg{animation:none}}
 
   /* USP ICON CARDS */
   .usp{background:var(--cream);padding:54px 0 64px}
-  .usp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .usp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(208px,1fr));gap:18px}
   .uspc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 24px;transition:transform .25s,box-shadow .25s}
   .uspc:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
   .uspc .badge{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:18px;box-shadow:0 10px 22px rgba(60,20,12,.18)}
@@ -121,13 +123,13 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">Schildersbedrijf · heel Nederland</span>
+      <span class="eyebrow">Schilderwerk · heel Nederland</span>
       <h1>Transformeer uw woning, <span class="em">vakkundig afgewerkt.</span></h1>
       <p class="hero-lead">Schilderwerk, behangen en lakwerk, strak uitgevoerd en netjes opgeleverd. Zie vooraf hoe het wordt met onze 3D-kleurkiezer.</p>
       <div class="hero-actions">
         <a href="offerte.html" class="btn btn-primary">Vrijblijvende offerte
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="kleurkiezer.html" class="btn btn-ghost">Probeer de 3D-kleurkiezer</a>
+        <a href="kleurkiezer.html" class="btn btn-ghost kk-glow">Probeer de 3D-kleurkiezer</a>
       </div>
       <div class="hero-meta">
         <div><div class="hm-num">Sigma &amp; Sikkens</div><div class="hm-lbl">Professioneel opgeleid</div></div>
@@ -137,10 +139,9 @@
     </div>
     <div class="hero-visual">
       <div class="hero-photo" id="heroSlides">
-        <img src="green_room_painted_walls.jpeg" class="on" alt="Frisse, strak geschilderde woonkamer">
-        <img src="walls_painted_a_house_badroom_floor.jpeg" alt="Geschilderde slaapkamer">
-        <img src="just_ceiling_painted_by_isolating_walls.jpeg" alt="Strak geschilderd plafond">
-        <img src="A_house_colored_nice_green.jpeg" alt="Buitenschilderwerk woning">
+        <img src="accent-wijnrood.jpg" class="on" alt="Woonkamer met warme wijnrode accentmuur">
+        <img src="woonkamer-taupe.jpg" alt="Woonkamer in warme taupe geschilderd">
+        <img src="hal-wit.jpg" alt="Strak wit geschilderde hal met deuren en kozijnen">
         <div class="hero-dots" id="heroDots"></div>
       </div>
       <a href="kleurkiezer.html" class="hero-badge">
@@ -155,10 +156,12 @@
 <div class="brush-divide" aria-hidden="true">
   <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="brushGrad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#C24A2E"/><stop offset=".2" stop-color="#E08A2B"/>
-        <stop offset=".4" stop-color="#E8C14E"/><stop offset=".6" stop-color="#4E9E5C"/>
-        <stop offset=".8" stop-color="#2E8C9E"/><stop offset="1" stop-color="#2B6CA8"/>
+      <linearGradient id="brushGrad" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat" gradientUnits="objectBoundingBox">
+        <stop offset="0" stop-color="#C24A2E"/><stop offset=".167" stop-color="#E08A2B"/>
+        <stop offset=".333" stop-color="#E8C14E"/><stop offset=".5" stop-color="#4E9E5C"/>
+        <stop offset=".667" stop-color="#2E8C9E"/><stop offset=".833" stop-color="#2B6CA8"/>
+        <stop offset="1" stop-color="#C24A2E"/>
+        <animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="1 0" dur="9s" repeatCount="indefinite"/>
       </linearGradient>
     </defs>
     <!-- kwaststreek met gerafelde uiteinden -->
@@ -202,6 +205,13 @@
       </div>
       <h3>Vrijblijvende offerte</h3>
       <p>Een duidelijke prijs zonder verplichtingen. U beslist daarna pas of we aan de slag gaan.</p>
+    </div>
+    <div class="uspc reveal">
+      <div class="badge" style="background:linear-gradient(135deg,#6bbf7a,#3f8f4e)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c0-9 6-15 15-16 0 9-6 15-15 16z"/><path d="M9 17c2.5-4.5 5.5-6.5 9-7.5"/></svg>
+      </div>
+      <h3>Milieubewust</h3>
+      <p>Waar het kan kiezen we voor watergedragen verf: minder oplosmiddelen, minder geur en een gezonder binnenklimaat.</p>
     </div>
   </div>
 </section>
@@ -260,12 +270,12 @@
       <p>Een greep uit afgerond werk door heel Nederland.</p>
     </div>
     <div class="work-grid">
-      <div class="photo big reveal"><img src="A_house_colored_nice_green.jpeg" alt="Buitenschilderwerk woning"><span class="tag">Schilderwerk · buiten</span></div>
-      <div class="photo reveal"><img src="green_room_painted_walls.jpeg" alt="Frisgroen geschilderde kamer"><span class="tag">Schilderwerk</span></div>
-      <div class="photo reveal"><img src="flat_painted_by_isolatioon_with_material_for_protecting_doors.jpeg" alt="Afgeplakt en geschilderd appartement"><span class="tag">Lakwerk</span></div>
-      <div class="photo wide reveal"><img src="walls_painted_a_house_badroom_floor.jpeg" alt="Geschilderde slaapkamer"><span class="tag">Schilderwerk · binnen</span></div>
-      <div class="photo reveal"><img src="just_ceiling_painted_by_isolating_walls.jpeg" alt="Strak geschilderd plafond"><span class="tag">Plafond</span></div>
-      <div class="photo reveal"><img src="oldgate.jpeg" alt="Gerenoveerd en gelakt hek"><span class="tag">Lakwerk · buiten</span></div>
+      <div class="photo big reveal"><img src="winkelpassage.jpg" alt="Schilderwerk in een winkelpassage"><span class="tag">Schilderwerk · winkelpand</span></div>
+      <div class="photo reveal"><img src="accent-groen.jpg" alt="Groene accentmuur"><span class="tag">Schilderwerk</span></div>
+      <div class="photo reveal"><img src="kozijn-oker.jpg" alt="Houten buitenkozijn gelakt"><span class="tag">Lakwerk · buiten</span></div>
+      <div class="photo wide reveal"><img src="winkelpui.jpg" alt="Buitenschilderwerk aan een winkelpui"><span class="tag">Schilderwerk · buiten</span></div>
+      <div class="photo reveal"><img src="kamer-grijs.jpg" alt="Kamer in grijstint geschilderd"><span class="tag">Schilderwerk · binnen</span></div>
+      <div class="photo reveal"><img src="accent-oudroze.jpg" alt="Accentmuur in oud-roze"><span class="tag">Schilderwerk</span></div>
     </div>
     <div class="work-foot reveal"><a href="portfolio.html" class="btn btn-light">Bekijk al het werk
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
@@ -284,7 +294,7 @@
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Knop voor een gemeubelde kamer</li>
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Neem uw favoriete kleuren mee in uw offerte</li>
       </ul>
-      <a href="kleurkiezer.html" class="btn btn-dark">Open de 3D-kleurkiezer
+      <a href="kleurkiezer.html" class="btn btn-dark kk-glow">Open de 3D-kleurkiezer
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <div class="tool-card reveal">
@@ -345,8 +355,8 @@
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span data-year></span> SterkerVerf · Schildersbedrijf</span>
-      <span>Transformeer uw woning</span>
+      <span>© <span data-year></span> SterkerVerf · Klus- en afwerkingsbedrijf</span>
+      <span class="foot-legal"><a href="voorwaarden.html">Algemene voorwaarden</a> · <a href="privacy.html">Privacyverklaring</a></span>
     </div>
   </div>
 </footer>

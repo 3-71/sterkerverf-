@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio · SterkerVerf</title>
-<meta name="description" content="Afgeronde projecten van SterkerVerf met datum en werkzaamheden: schilderwerk, behangen en lakwerk door heel Nederland.">
+<title>Ons werk · SterkerVerf</title>
+<meta name="description" content="Een greep uit het werk van SterkerVerf: schilderwerk binnen en buiten, accentmuren, winkelpanden en kozijnen, door heel Nederland.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
   .pf-chip{position:absolute;top:12px;left:12px;background:rgba(23,19,17,.8);color:#fff;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:6px 12px;border-radius:20px;backdrop-filter:blur(4px)}
   .pf-chip.illu{background:rgba(168,71,59,.92)}
   .pf-body{padding:20px 20px 22px}
-  .pf-date{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--terra);margin-bottom:8px}
+  .pf-date{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--terra);margin-bottom:8px}
   .pf-date svg{flex:none}
   .pf-h{font-family:'Sora',sans-serif;font-size:16px;font-weight:600;margin-bottom:6px}
   .pf-work{font-size:14.5px;color:var(--muted)}
@@ -58,9 +58,9 @@
 
 <section class="phero">
   <div class="wrap">
-    <span class="eyebrow">Portfolio</span>
-    <h1>Afgeronde projecten, <span class="em">met datum en werk</span></h1>
-    <p class="lead">Een overzicht van uitgevoerd werk. Sorteer op dienst, en klik op een foto om hem groot te bekijken. Waar nog geen foto beschikbaar is, tonen we een illustratie.</p>
+    <span class="eyebrow">Ons werk</span>
+    <h1>Een greep uit <span class="em">ons werk</span></h1>
+    <p class="lead">Echte projecten, van accentmuren en afgewerkte kamers tot winkelpanden en buitenwerk. Sorteer op dienst, en klik op een foto om hem groot te bekijken. Waar nog geen foto beschikbaar is, tonen we een illustratie.</p>
   </div>
 </section>
 
@@ -75,39 +75,64 @@
 
     <div class="pf-grid" id="grid">
 
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="accent-wijnrood.jpg"><img src="accent-wijnrood.jpg" alt="Accentmuur in wijnrood"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Accentmuur woonkamer</div><p class="pf-work">Eén wand in een warme wijnrode tint, egaal gedekt en strak ingesneden langs plafond en kozijn.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="woonkamer-taupe.jpg"><img src="woonkamer-taupe.jpg" alt="Woonkamer in taupe geschilderd"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Woonkamer</div><p class="pf-work">Wanden in een warme taupe, dekkend en egaal geschilderd, met een strak wit plafond.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="accent-groen.jpg"><img src="accent-groen.jpg" alt="Groene accentmuur"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Accentmuur</div><p class="pf-work">Een frisse groene wand als blikvanger, strak afgewerkt tot in de hoeken.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="winkelpassage.jpg"><img src="winkelpassage.jpg" alt="Schilderwerk in een winkelpassage"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Zakelijk</div><div class="pf-h">Winkelpand</div><p class="pf-work">Schilderwerk in een winkelpassage: plafonds, lambrisering en houten delen netjes afgewerkt.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="accent-oudroze.jpg"><img src="accent-oudroze.jpg" alt="Accentmuur in oud-roze"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Accentmuur</div><p class="pf-work">Zacht oud-roze op één wand, de rest neutraal gehouden voor een rustige balans.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="hal-wit.jpg"><img src="hal-wit.jpg" alt="Hal en overloop wit geschilderd"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Hal en overloop</div><p class="pf-work">Strak wit schilderwerk met dekkend afgewerkte deuren en kozijnen.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="gevel-steiger.jpg"><img src="gevel-steiger.jpg" alt="Buitenschilderwerk aan de gevel vanaf de steiger"><span class="pf-chip">Schilderwerk · buiten</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Buitenwerk</div><div class="pf-h">Gevel</div><p class="pf-work">Buitenschilderwerk aan de gevel en kozijnen, uitgevoerd vanaf de steiger.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="kamer-grijs.jpg"><img src="kamer-grijs.jpg" alt="Kamer in grijstint geschilderd"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Kamer in grijstint</div><p class="pf-work">Wanden in een rustige grijstint, met plafond en kozijn in dezelfde beurt meegenomen.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="winkelpui.jpg"><img src="winkelpui.jpg" alt="Buitenschilderwerk aan een winkelpui"><span class="pf-chip">Schilderwerk · buiten</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Zakelijk</div><div class="pf-h">Winkelpand</div><p class="pf-work">Buitenschilderwerk aan de winkelpui en luifel van een winkelpand.</p></div>
+      </div>
+
+      <div class="pf-card" data-cat="schilderwerk">
+        <div class="pf-img" data-full="kamer-grijs-uitzicht.jpg"><img src="kamer-grijs-uitzicht.jpg" alt="Kamer met uitzicht, strak geschilderd"><span class="pf-chip">Schilderwerk</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Kamer</div><p class="pf-work">Wanden strak gesausd in een warme grijstint, netjes ingesneden rond het raam.</p></div>
+      </div>
+
       <div class="pf-card" data-cat="lakwerk">
-        <div class="pf-img" data-full="flat_painted_by_isolatioon_with_material_for_protecting_doors.jpeg"><img src="flat_painted_by_isolatioon_with_material_for_protecting_doors.jpeg" alt="Reparatie schilderwerk volledig gebouw"><span class="pf-chip">Lakwerk</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>4 februari 2026</div><div class="pf-h">Appartementencomplex</div><p class="pf-work">Reparatie schilderwerk volledig gebouw. Deuren en kozijnen afgeplakt, geschuurd en strak gelakt.</p></div>
-      </div>
-
-      <div class="pf-card" data-cat="schilderwerk">
-        <div class="pf-img" data-full="green_room_painted_walls.jpeg"><img src="green_room_painted_walls.jpeg" alt="Reparatie wanden en deuren verversen"><span class="pf-chip">Schilderwerk</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>3 juni 2025</div><div class="pf-h">Woonkamer</div><p class="pf-work">Reparatie van wanden en deuren verversen. Muren strak gesausd en plafond meegenomen.</p></div>
-      </div>
-
-      <div class="pf-card" data-cat="schilderwerk">
-        <div class="pf-img" data-full="A_house_colored_nice_green.jpeg"><img src="A_house_colored_nice_green.jpeg" alt="Buitengevel geschilderd"><span class="pf-chip">Schilderwerk · buiten</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>22 mei 2025</div><div class="pf-h">Vrijstaande woning</div><p class="pf-work">Buitengevel volledig geschilderd in een frisse kleur, na grondige voorbehandeling.</p></div>
-      </div>
-
-      <div class="pf-card" data-cat="schilderwerk">
-        <div class="pf-img" data-full="just_ceiling_painted_by_isolating_walls.jpeg"><img src="just_ceiling_painted_by_isolating_walls.jpeg" alt="Plafond geschilderd"><span class="pf-chip">Schilderwerk</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>9 september 2025</div><div class="pf-h">Plafonds</div><p class="pf-work">Plafonds strak geschilderd nadat de wanden zorgvuldig zijn afgeplakt.</p></div>
+        <div class="pf-img" data-full="kozijn-oker.jpg"><img src="kozijn-oker.jpg" alt="Houten buitenkozijn gelakt"><span class="pf-chip">Lakwerk · buiten</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Buitenwerk</div><div class="pf-h">Buitenkozijn</div><p class="pf-work">Houten kozijn geschuurd, gegrond en strak gelakt voor jaren bescherming.</p></div>
       </div>
 
       <div class="pf-card" data-cat="lakwerk">
-        <div class="pf-img" data-full="oldgate.jpeg"><img src="oldgate.jpeg" alt="Hek hersteld en gelakt"><span class="pf-chip">Lakwerk · buiten</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>30 maart 2025</div><div class="pf-h">Sierhek</div><p class="pf-work">Oud hek hersteld, geschuurd, gegrond en opnieuw gelakt voor jaren bescherming.</p></div>
-      </div>
-
-      <div class="pf-card" data-cat="schilderwerk">
-        <div class="pf-img" data-full="walls_painted_a_house_badroom_floor.jpeg"><img src="walls_painted_a_house_badroom_floor.jpeg" alt="Slaapkamer geschilderd"><span class="pf-chip">Schilderwerk</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>18 juli 2025</div><div class="pf-h">Slaapkamer</div><p class="pf-work">Slaapkamer geschilderd, wanden strak afgewerkt en hoeken netjes ingesneden.</p></div>
-      </div>
-
-      <div class="pf-card" data-cat="schilderwerk">
-        <div class="pf-img" data-full="i_doing_emery.jpeg"><img src="i_doing_emery.jpeg" alt="Voorbereidend schuurwerk"><span class="pf-chip">Voorbereiding</span></div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>12 augustus 2025</div><div class="pf-h">Voorbereiding</div><p class="pf-work">Schuurwerk en gronden vóór het schilderen: de basis voor een strak resultaat.</p></div>
+        <div class="pf-img" data-full="kozijn-hout-voor.jpg"><img src="kozijn-hout-voor.jpg" alt="Verweerd houten kozijn voor behandeling"><span class="pf-chip">Lakwerk · buiten</span></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Voor de behandeling</div><div class="pf-h">Buitenkozijn (voor)</div><p class="pf-work">Verweerd houten kozijn: de uitgangssituatie vóór schuren, gronden en lakken.</p></div>
       </div>
 
       <!-- Behangen: nog geen foto -> illustratie -->
@@ -124,7 +149,7 @@
           </svg>
           <span class="pf-chip illu">Illustratie</span>
         </div>
-        <div class="pf-body"><div class="pf-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>5 november 2025</div><div class="pf-h">Accentwand</div><p class="pf-work">Vliesbehang aangebracht in de woonkamer, naadloos en strak. <b>Foto volgt.</b></p></div>
+        <div class="pf-body"><div class="pf-date"><svg width="9" height="9" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>Binnenwerk</div><div class="pf-h">Behangwerk</div><p class="pf-work">Vliesbehang strak en naadloos aangebracht. <b>Foto volgt.</b></p></div>
       </div>
 
     </div>
@@ -161,8 +186,8 @@
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span data-year></span> SterkerVerf · Schildersbedrijf</span>
-      <span>Transformeer uw woning</span>
+      <span>© <span data-year></span> SterkerVerf · Klus- en afwerkingsbedrijf</span>
+      <span class="foot-legal"><a href="voorwaarden.html">Algemene voorwaarden</a> · <a href="privacy.html">Privacyverklaring</a></span>
     </div>
   </div>
 </footer>

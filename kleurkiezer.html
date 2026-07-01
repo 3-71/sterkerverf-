@@ -197,8 +197,8 @@
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span data-year></span> SterkerVerf · Schildersbedrijf</span>
-      <span>Transformeer uw woning</span>
+      <span>© <span data-year></span> SterkerVerf · Klus- en afwerkingsbedrijf</span>
+      <span class="foot-legal"><a href="voorwaarden.html">Algemene voorwaarden</a> · <a href="privacy.html">Privacyverklaring</a></span>
     </div>
   </div>
 </footer>
@@ -360,7 +360,7 @@ try {
 
   // gordijnen (geplooid, kleurbaar) — links en rechts van het raam, vloerlengte
   function curtainPanel(cx){
-    const cw=0.52, ch=2.46, segW=26, segH=12;
+    const cw=0.52, ch=2.46, segW=44, segH=22;
     const geo=new THREE.PlaneGeometry(cw,ch,segW,segH);
     const pos=geo.attributes.position;
     for(let i=0;i<pos.count;i++){
@@ -377,7 +377,7 @@ try {
   }
   curtainPanel(0.34); curtainPanel(2.56);
   const rail=new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.022,2.9,32), railMat); rail.rotation.z=Math.PI/2; rail.position.set(wx,2.55,-D/2+0.2); rail.castShadow=true; scene.add(rail);
-  [wx-1.45, wx+1.45].forEach(fx=>{ const fin=new THREE.Mesh(new THREE.SphereGeometry(0.045,16,16), railMat); fin.position.set(fx,2.55,-D/2+0.2); scene.add(fin); });
+  [wx-1.45, wx+1.45].forEach(fx=>{ const fin=new THREE.Mesh(new THREE.SphereGeometry(0.045,32,24), railMat); fin.position.set(fx,2.55,-D/2+0.2); scene.add(fin); });
 
   // framed photos
   const texLoader = new THREE.TextureLoader();
@@ -386,14 +386,14 @@ try {
     const mat=new THREE.MeshStandardMaterial({ color:'#bbb', roughness:0.6 });
     texLoader.load(url, t=>{ t.colorSpace=THREE.SRGBColorSpace; mat.map=t; mat.color.set('#fff'); mat.needsUpdate=true; });
     const pic=new THREE.Mesh(new THREE.PlaneGeometry(w,h), mat); pic.position.set(0,0,0.025); g.add(pic); }
-  framedPhoto('A_house_colored_nice_green.jpeg',0.95,0.72,[-0.35,1.75,-D/2+0.06],0);
-  framedPhoto('walls_painted_a_house_badroom_floor.jpeg',0.8,1.0,[-W/2+0.06,1.55,-1.2],Math.PI/2);
+  framedPhoto('accent-groen.jpg',0.95,0.72,[-0.35,1.75,-D/2+0.06],0);
+  framedPhoto('accent-wijnrood.jpg',0.8,1.0,[-W/2+0.06,1.55,-1.2],Math.PI/2);
 
   // lights
   const hemi = new THREE.HemisphereLight('#ffffff','#b1a184',0.6); scene.add(hemi);
   const amb = new THREE.AmbientLight('#ffffff',0.3); scene.add(amb);
   const sun = new THREE.DirectionalLight('#fff1d6',1.9); sun.position.set(2.6,4.4,-6.8); sun.castShadow=true;
-  sun.shadow.mapSize.set(2048,2048); sun.shadow.camera.near=1; sun.shadow.camera.far=24;
+  sun.shadow.mapSize.set(4096,4096); sun.shadow.camera.near=1; sun.shadow.camera.far=24;
   sun.shadow.camera.left=-7; sun.shadow.camera.right=7; sun.shadow.camera.top=7; sun.shadow.camera.bottom=-7;
   sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.025; sun.shadow.radius=4; sun.target.position.set(-0.5,0.4,1.6); scene.add(sun); scene.add(sun.target);
   const fillA = new THREE.PointLight('#fff4e6',5,24,1.6); fillA.position.set(0,1.9,1.0); scene.add(fillA);
@@ -430,10 +430,10 @@ try {
   const furniture = new THREE.Group(); furniture.visible = false; scene.add(furniture);
   function clearGroup(g){ for(let i=g.children.length-1;i>=0;i--){ const c=g.children[i]; g.remove(c); if(c.geometry) c.geometry.dispose(); if(c.material){ (Array.isArray(c.material)?c.material:[c.material]).forEach(m=>m.dispose()); } } }
   function fbox(w,h,d,x,y,z,color,rough){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshStandardMaterial({ color, roughness:rough==null?0.8:rough })); m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; furniture.add(m); return m; }
-  function fcyl(rt,rb,h,x,y,z,color,rough){ const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,48), new THREE.MeshStandardMaterial({ color, roughness:rough==null?0.7:rough })); m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; furniture.add(m); return m; }
+  function fcyl(rt,rb,h,x,y,z,color,rough){ const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,64), new THREE.MeshStandardMaterial({ color, roughness:rough==null?0.7:rough })); m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; furniture.add(m); return m; }
   function rugAt(w,d,x,z,c1,c2){ const r=new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshStandardMaterial({ color:c1, roughness:1 })); r.rotation.x=-Math.PI/2; r.position.set(x,0.012,z); r.receiveShadow=true; furniture.add(r); const r2=new THREE.Mesh(new THREE.PlaneGeometry(w*0.8,d*0.75), new THREE.MeshStandardMaterial({ color:c2, roughness:1 })); r2.rotation.x=-Math.PI/2; r2.position.set(x,0.02,z); furniture.add(r2); }
   function contact(w,d,x,z){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshBasicMaterial({ map:shadowTex, transparent:true, depthWrite:false })); m.rotation.x=-Math.PI/2; m.position.set(x,0.016,z); furniture.add(m); }
-  function plant(x,z){ fcyl(0.23,0.17,0.42,x,0.21,z,'#b07a4e',0.9); const f=new THREE.Mesh(new THREE.IcosahedronGeometry(0.52,1), new THREE.MeshStandardMaterial({ color:'#4E9E5C', roughness:0.9, flatShading:true })); f.position.set(x,0.86,z); f.castShadow=true; furniture.add(f); const f2=new THREE.Mesh(new THREE.IcosahedronGeometry(0.34,1), new THREE.MeshStandardMaterial({ color:'#5FAE6B', roughness:0.9, flatShading:true })); f2.position.set(x+0.17,0.66,z-0.09); furniture.add(f2); contact(0.7,0.7,x,z); }
+  function plant(x,z){ fcyl(0.23,0.17,0.42,x,0.21,z,'#b07a4e',0.9); const f=new THREE.Mesh(new THREE.IcosahedronGeometry(0.52,2), new THREE.MeshStandardMaterial({ color:'#4E9E5C', roughness:0.9, flatShading:true })); f.position.set(x,0.86,z); f.castShadow=true; furniture.add(f); const f2=new THREE.Mesh(new THREE.IcosahedronGeometry(0.34,2), new THREE.MeshStandardMaterial({ color:'#5FAE6B', roughness:0.9, flatShading:true })); f2.position.set(x+0.17,0.66,z-0.09); furniture.add(f2); contact(0.7,0.7,x,z); }
   // Rietveld Rood-Blauwe stoel (De Stijl — typisch Nederlands ontwerp)
   function dutchChair(x,z,roty){
     const g=new THREE.Group(); g.position.set(x,0,z); if(roty!=null) g.rotation.y=roty; furniture.add(g);
@@ -462,9 +462,9 @@ try {
     function clog(cx,ry){ const c=new THREE.Group(); c.position.set(cx,0,0); c.rotation.y=ry; g.add(c);
       const body=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.07,0.24), wood); body.position.set(0,0.04,0); body.castShadow=true; body.receiveShadow=true; c.add(body);
       const toe=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.11,0.1), wood); toe.position.set(0,0.07,0.14); toe.rotation.x=-0.6; toe.castShadow=true; c.add(toe);
-      const tip=new THREE.Mesh(new THREE.SphereGeometry(0.052,12,10), wood); tip.scale.set(1,0.8,0.7); tip.position.set(0,0.125,0.165); c.add(tip);
+      const tip=new THREE.Mesh(new THREE.SphereGeometry(0.052,24,16), wood); tip.scale.set(1,0.8,0.7); tip.position.set(0,0.125,0.165); c.add(tip);
       const hole=new THREE.Mesh(new THREE.BoxGeometry(0.075,0.025,0.12), dark); hole.position.set(0,0.075,-0.035); c.add(hole);
-      const dot=new THREE.Mesh(new THREE.SphereGeometry(0.014,8,8), accent); dot.position.set(0,0.125,0.2); c.add(dot);
+      const dot=new THREE.Mesh(new THREE.SphereGeometry(0.014,16,12), accent); dot.position.set(0,0.125,0.2); c.add(dot);
     }
     clog(-0.07,0.12); clog(0.075,-0.12);
     contact(0.5,0.45,x,z);
@@ -520,11 +520,11 @@ try {
     // kraan boven de spoelbak (chroom, gebogen)
     const chrome=new THREE.MeshStandardMaterial({color:'#c7ccd0',metalness:0.9,roughness:0.22});
     const kr=(g)=>{ g.castShadow=true; furniture.add(g); };
-    const riser=new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.026,0.34,16),chrome); riser.position.set(2.72,1.07,-1.2); kr(riser);
-    const spout=new THREE.Mesh(new THREE.CylinderGeometry(0.021,0.021,0.26,16),chrome); spout.position.set(2.6,1.235,-1.2); spout.rotation.z=Math.PI/2; kr(spout);
-    const bend=new THREE.Mesh(new THREE.SphereGeometry(0.025,12,12),chrome); bend.position.set(2.72,1.235,-1.2); furniture.add(bend);
-    const tip=new THREE.Mesh(new THREE.CylinderGeometry(0.019,0.019,0.07,12),chrome); tip.position.set(2.49,1.2,-1.2); kr(tip);
-    const lever=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.014,0.16,10),chrome); lever.position.set(2.75,1.18,-1.05); lever.rotation.x=Math.PI/2.6; kr(lever);
+    const riser=new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.026,0.34,24),chrome); riser.position.set(2.72,1.07,-1.2); kr(riser);
+    const spout=new THREE.Mesh(new THREE.CylinderGeometry(0.021,0.021,0.26,24),chrome); spout.position.set(2.6,1.235,-1.2); spout.rotation.z=Math.PI/2; kr(spout);
+    const bend=new THREE.Mesh(new THREE.SphereGeometry(0.025,20,16),chrome); bend.position.set(2.72,1.235,-1.2); furniture.add(bend);
+    const tip=new THREE.Mesh(new THREE.CylinderGeometry(0.019,0.019,0.07,20),chrome); tip.position.set(2.49,1.2,-1.2); kr(tip);
+    const lever=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.014,0.16,16),chrome); lever.position.set(2.75,1.18,-1.05); lever.rotation.x=Math.PI/2.6; kr(lever);
     fbox(0.52,0.03,0.55,2.55,0.92,1.0,'#222',0.4);     // fornuis
     // island
     fbox(1.6,0.9,0.9,-0.2,0.45,0.8,cab,cabR); fbox(1.74,0.06,1.04,-0.2,0.93,0.8,ctop,0.3);
